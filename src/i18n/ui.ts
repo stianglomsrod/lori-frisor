@@ -112,7 +112,11 @@ export const ui: Record<Locale, UIStrings> = {
     nav: ["Tjenester", "Priser", "Tilbud", "Produkter", "Kontakt"].map(
       (label, i) => ({ href: navHrefs[i], label }),
     ),
-    header: { menu: "Meny", menuAria: "Hovedmeny", toTop: "Lori Frisør – til toppen" },
+    header: {
+      menu: "Meny",
+      menuAria: "Hovedmeny",
+      toTop: "Lori Frisør – til toppen",
+    },
     langToggle: { aria: "Bytt språk" },
     skipLink: "Hopp til hovedinnhold",
     hero: { seeServices: "Se tjenester" },
@@ -172,7 +176,8 @@ export const ui: Record<Locale, UIStrings> = {
     contact: {
       eyebrow: "Kontakt",
       title: "Finn oss i Halden",
-      intro: "Sentralt på Torget. Stikk innom, ring, eller bestill time på nett.",
+      intro:
+        "Sentralt på Torget. Stikk innom, ring, eller bestill time på nett.",
       visitTitle: "Besøk & kontakt",
       address: "Adresse",
       phone: "Telefon",
@@ -188,7 +193,8 @@ export const ui: Record<Locale, UIStrings> = {
       navAria: "Bunnmeny",
       shortcuts: "Snarveier",
       contact: "Kontakt",
-      copyright: (year) => `© ${year} Lori Frisør. Alle rettigheter forbeholdt.`,
+      copyright: (year) =>
+        `© ${year} Lori Frisør. Alle rettigheter forbeholdt.`,
       bookingVia: "Booking via Timma.",
       edit: "Rediger siden",
     },
@@ -215,7 +221,11 @@ export const ui: Record<Locale, UIStrings> = {
     nav: ["Services", "Prices", "Offers", "Products", "Contact"].map(
       (label, i) => ({ href: navHrefs[i], label }),
     ),
-    header: { menu: "Menu", menuAria: "Main menu", toTop: "Lori Frisør – back to top" },
+    header: {
+      menu: "Menu",
+      menuAria: "Main menu",
+      toTop: "Lori Frisør – back to top",
+    },
     langToggle: { aria: "Change language" },
     skipLink: "Skip to main content",
     hero: { seeServices: "See services" },

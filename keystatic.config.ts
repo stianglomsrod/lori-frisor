@@ -33,7 +33,10 @@ const productCategories: Record<Locale, { label: string; value: string }[]> = {
     label: v,
     value: v,
   })),
-  en: ["Care", "Styling", "Colour", "Tools"].map((v) => ({ label: v, value: v })),
+  en: ["Care", "Styling", "Colour", "Tools"].map((v) => ({
+    label: v,
+    value: v,
+  })),
 };
 
 // --- Skjema-byggere (gjenbrukes for hvert språk) ---------------------------

@@ -244,7 +244,9 @@ export async function getProducts(
   }));
 }
 
-export async function getOffers(locale: Locale = defaultLocale): Promise<Offer[]> {
+export async function getOffers(
+  locale: Locale = defaultLocale,
+): Promise<Offer[]> {
   const o =
     (await reader.singletons[`offers_${locale}` as "offers_no"].read()) ??
     (locale !== defaultLocale

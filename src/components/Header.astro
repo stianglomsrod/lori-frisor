@@ -17,7 +17,9 @@ const { booking } = await getSettings();
     </a>
 
     <div class="site-header__actions">
-      <LanguageToggle />
+      <div class="site-header__lang">
+        <LanguageToggle />
+      </div>
       <nav class="site-nav" aria-label={t.header.menuAria}>
         <button
           class="nav-toggle"
@@ -39,6 +41,9 @@ const { booking } = await getSettings();
               ))
             }
           </ul>
+          <div class="site-nav__lang">
+            <LanguageToggle />
+          </div>
           <a class="btn btn--primary site-nav__cta" href={booking.url} target="_blank" rel="noopener">
             {t.cta.book}
           </a>
@@ -73,6 +78,18 @@ const { booking } = await getSettings();
     display: flex;
     align-items: center;
     gap: 0.75rem;
+  }
+
+  /* Språkvelger vises i menypanelet på mobil, inline på desktop */
+  .site-header__lang {
+    display: none;
+  }
+  .site-nav__lang {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-line);
   }
 
   .nav-toggle {
@@ -163,6 +180,12 @@ const { booking } = await getSettings();
   /* Desktop: horisontal meny, ingen toggle */
   @media (min-width: 56rem) {
     .nav-toggle {
+      display: none;
+    }
+    .site-header__lang {
+      display: inline-flex;
+    }
+    .site-nav__lang {
       display: none;
     }
     .site-nav {

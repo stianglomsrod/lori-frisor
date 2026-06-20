@@ -1,0 +1,137 @@
+---
+import Logo from "./Logo.astro";
+import { navLinks } from "@data/site";
+import { getSettings } from "@lib/content";
+
+const { contact, social, booking } = await getSettings();
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__brand">
+      <Logo light />
+      <p>Frisørsalong i hjertet av Halden. Velkommen innom.</p>
+      <a class="btn btn--primary" href={booking.url} target="_blank" rel="noopener">
+        {booking.label}
+      </a>
+    </div>
+
+    <nav class="site-footer__nav" aria-label="Bunnmeny">
+      <h2 class="site-footer__heading">Snarveier</h2>
+      <ul role="list">
+        {navLinks.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="site-footer__contact">
+      <h2 class="site-footer__heading">Kontakt</h2>
+      <address>
+        <a href={contact.mapsUrl} target="_blank" rel="noopener">
+          {contact.addressStreet}, {contact.addressCity}
+        </a><br />
+        <a href={`tel:${contact.phone}`}>{contact.phoneDisplay}</a><br />
+        <a href={`mailto:${contact.email}`}>{contact.email}</a>
+      </address>
+      <div class="site-footer__social">
+        <a href={social.facebook} target="_blank" rel="noopener">Facebook</a>
+        <a href={social.instagram} target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container site-footer__bottom">
+    <p>© {year} Lori Frisør. Alle rettigheter forbeholdt.</p>
+    <p class="site-footer__bottom-right">
+      <span>Booking via Timma.</span>
+      <a class="site-footer__edit" href="/keystatic" rel="nofollow">Rediger siden</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-charcoal);
+    color: #e7ddd1;
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1.5rem;
+  }
+  .site-footer__inner {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .site-footer__brand p {
+    color: #c8bcae;
+    margin: 1rem 0 1.25rem;
+    max-width: 32ch;
+  }
+  .site-footer__heading {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #b4a899;
+    margin: 0 0 1rem;
+  }
+  .site-footer__nav ul {
+    list-style: none;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .site-footer a:not(.btn) {
+    color: #ece3d7;
+    text-decoration: none;
+  }
+  .site-footer a:not(.btn):hover {
+    text-decoration: underline;
+  }
+  .site-footer address {
+    font-style: normal;
+    line-height: 1.9;
+  }
+  .site-footer__social {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 0.85rem;
+    color: #a99d8e;
+  }
+  .site-footer__bottom p {
+    margin: 0;
+  }
+  .site-footer__bottom-right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+  }
+  .site-footer__edit {
+    font-size: 0.82rem;
+    color: #8c8170 !important;
+    text-decoration: none;
+  }
+  .site-footer__edit:hover {
+    color: #ece3d7 !important;
+    text-decoration: underline;
+  }
+  .site-footer__edit:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  @media (min-width: 48rem) {
+    .site-footer__inner {
+      grid-template-columns: 1.4fr 1fr 1.2fr;
+      gap: 3rem;
+    }
+  }
+</style>

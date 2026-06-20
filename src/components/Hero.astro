@@ -1,0 +1,107 @@
+---
+import Placeholder from "./Placeholder.astro";
+import { getSettings, getHomepage } from "@lib/content";
+
+const { booking } = await getSettings();
+const { hero } = await getHomepage();
+---
+
+<section class="hero" aria-labelledby="hero-tittel">
+  <div class="container hero__inner">
+    <div class="hero__content">
+      <p class="eyebrow">{hero.eyebrow}</p>
+      <h1 id="hero-tittel">
+        {hero.titleStart} <span class="hero__accent">{hero.titleAccent}</span>
+      </h1>
+      <p class="hero__lead">
+        {hero.lead}
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn--primary" href={booking.url} target="_blank" rel="noopener">
+          {booking.label}
+        </a>
+        <a class="btn btn--secondary" href="#tjenester">Se tjenester</a>
+      </div>
+
+      <ul class="hero__trust">
+        {hero.bullets.map((bullet) => <li>{bullet}</li>)}
+      </ul>
+    </div>
+
+    <div class="hero__media">
+      <Placeholder
+        src={hero.image}
+        alt={hero.imageAlt}
+        variant="salon"
+        ratio="4 / 5"
+        label="Plassholder"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    background:
+      radial-gradient(120% 90% at 85% 0%, var(--color-sand) 0%, transparent 60%),
+      var(--color-cream);
+    padding-block: clamp(2.5rem, 7vw, 5rem) clamp(2rem, 4vw, 3rem);
+  }
+  .hero__inner {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: center;
+  }
+  .hero__lead {
+    font-size: 1.2rem;
+    color: var(--color-ink-soft);
+    max-width: 38ch;
+  }
+  .hero__accent {
+    color: var(--color-bronze);
+    font-style: italic;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin: 1.75rem 0 1.5rem;
+  }
+  .hero__trust {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    color: var(--color-ink-soft);
+    font-size: 0.98rem;
+  }
+  .hero__trust li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .hero__trust li::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-sage);
+    flex: none;
+  }
+  .hero__media {
+    max-width: 26rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  @media (min-width: 56rem) {
+    .hero__inner {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+    .hero__media {
+      margin-inline: 0;
+      margin-left: auto;
+    }
+  }
+</style>

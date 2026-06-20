@@ -1,0 +1,22 @@
+days:
+  - day: Mandag
+    hours: "09:00–17:00"
+    closed: false
+  - day: Tirsdag
+    hours: "09:00–17:00"
+    closed: false
+  - day: Onsdag
+    hours: "09:00–17:00"
+    closed: false
+  - day: Torsdag
+    hours: "10:00–19:00"
+    closed: false
+  - day: Fredag
+    hours: "09:00–17:00"
+    closed: false
+  - day: Lørdag
+    hours: Stengt
+    closed: true
+  - day: Søndag
+    hours: Stengt
+    closed: true

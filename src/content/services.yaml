@@ -1,0 +1,48 @@
+items:
+  - title: Klipp
+    description: >-
+      Klipp og forming tilpasset hårtype og ansiktsform. Vask og enkel føhn
+      inkludert.
+    priceFrom: 545
+    category: Hår
+  - title: Farge
+    description: >-
+      Helfarge eller ansatsfarge for friskt, jevnt resultat. Pris etter
+      hårlengde.
+    priceFrom: 895
+    category: Farge
+  - title: Striper / Balayage / Foilayage
+    description: >-
+      Naturlige slynger eller markerte striper for dybde og lysere preg.
+    priceFrom: 1495
+    category: Farge
+  - title: Bleking
+    description: >-
+      Lysning for et lyst uttrykk. Vi vurderer hårets tilstand før behandling.
+    priceFrom: 1295
+    category: Farge
+  - title: Skjegg
+    description: Trimming og forming av skjegg for et velstelt uttrykk.
+    priceFrom: 295
+    category: Skjegg
+  - title: Hår extension
+    description: >-
+      Lengde og fylde med extensions. Konsultasjon avtales på forhånd.
+    priceFrom: null
+    category: Behandling
+  - title: Vask og føhn
+    description: Vask, pleie og føhn for et frisktstylet resultat.
+    priceFrom: 395
+    category: Hår
+  - title: Vipper / bryn
+    description: Forming og farge av bryn og vipper som rammer inn blikket.
+    priceFrom: 395
+    category: Vipper & bryn
+  - title: Hodemassasje
+    description: Avslappende hodemassasje som en del av behandlingen.
+    priceFrom: 245
+    category: Behandling
+  - title: Hårkur
+    description: Næringsrik kur som gir glød, fukt og bedre håndterbart hår.
+    priceFrom: 245
+    category: Behandling

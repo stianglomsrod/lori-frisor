@@ -1,0 +1,98 @@
+---
+/**
+ * Logo for Lori Frisør.
+ * Bruker salongens faktiske emblem (gull «L» + saks), beskåret fra eierens
+ * originalfil og lagt på gjennomsiktig bakgrunn (se scripts/extract-logo.mjs).
+ * Ordmerket settes som skarp serif-tekst så det er lesbart i alle størrelser.
+ */
+interface Props {
+  /** Visuell størrelse i rem (styrer mark + tekst). */
+  size?: number;
+  /** Bruk lys variant (for mørk bakgrunn, f.eks. footer). */
+  light?: boolean;
+}
+const { size = 1.5, light = false } = Astro.props;
+---
+
+<span class:list={["logo", { "logo--light": light }]} style={`--logo-size:${size}rem`}>
+  {
+    light ? (
+      <img
+        class="logo__mark"
+        src="/lori-emblem-light.png"
+        width="384"
+        height="340"
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+      />
+    ) : (
+      <picture>
+        {/* Mørk modus: bytt til lys emblem-variant for kontrast */}
+        <source
+          srcset="/lori-emblem-light.png"
+          media="(prefers-color-scheme: dark)"
+        />
+        <img
+          class="logo__mark"
+          src="/lori-emblem.png"
+          width="384"
+          height="340"
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+        />
+      </picture>
+    )
+  }
+  <span class="logo__text">
+    <span class="logo__name">Lori</span>
+    <span class="logo__sub">Frisør</span>
+  </span>
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-display);
+    line-height: 1;
+  }
+  .logo__mark {
+    width: auto;
+    height: calc(var(--logo-size) * 2);
+    flex: none;
+  }
+  .logo picture {
+    display: inline-flex;
+    flex: none;
+  }
+  .logo__text {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.1em;
+  }
+  .logo__name {
+    font-size: calc(var(--logo-size) * 1.15);
+    font-weight: 600;
+    color: var(--color-ink);
+    letter-spacing: 0.01em;
+    line-height: 0.95;
+  }
+  .logo__sub {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: calc(var(--logo-size) * 0.5);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-bronze);
+  }
+  .logo--light .logo__name {
+    color: #fff;
+  }
+  .logo--light .logo__sub {
+    color: var(--color-gold);
+  }
+</style>
+

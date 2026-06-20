@@ -1,0 +1,183 @@
+---
+import Placeholder from "./Placeholder.astro";
+import { getProducts, getSettings } from "@lib/content";
+
+const products = await getProducts();
+const { contact } = await getSettings();
+
+// Lett variant av click-and-collect: kunden reserverer og henter i salong.
+// Forhåndsutfylt SMS/telefon – ingen nettbetaling i denne fasen.
+const reserveHref = (name: string) =>
+  `sms:${contact.phone}?body=${encodeURIComponent(
+    `Hei! Jeg vil gjerne reservere «${name}» for henting i salongen.`
+  )}`;
+---
+
+<section class="section section--sand" id="produkter" aria-labelledby="produkter-tittel">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Produkter</p>
+      <h2 id="produkter-tittel">Ta salongkvaliteten med hjem</h2>
+      <p>
+        Et utvalg favoritter vi bruker og anbefaler. Reservér enkelt, så legger
+        vi det klart til henting neste gang du er innom – du betaler i salongen.
+      </p>
+    </div>
+
+    <ul class="product-grid reveal" role="list">
+      {
+        products.map((product) => (
+          <li class="product-card card">
+            <div class="product-card__media">
+              <Placeholder
+                src={product.image}
+                variant="product"
+                ratio="1 / 1"
+                fit="cover"
+                label="Plassholder"
+              />
+              {product.featured && (
+                <span class="product-card__badge">Anbefalt</span>
+              )}
+            </div>
+            <div class="product-card__body">
+              <span class="product-card__cat">{product.category}</span>
+              <h3>{product.name}</h3>
+              <p class="product-card__brand">{product.brand}</p>
+              <p class="product-card__desc">{product.description}</p>
+              <div class="product-card__foot">
+                <span class="product-card__price">{product.price} kr</span>
+                <a class="btn btn--ghost product-card__reserve" href={reserveHref(product.name)}>
+                  Reserver
+                  <span class="visually-hidden"> {product.name} for henting</span>
+                </a>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="product-note">
+      Foretrekker du å ringe? Slå oss på
+      <a href={`tel:${contact.phone}`}>{contact.phoneDisplay}</a>, så ordner vi
+      reservasjonen for deg.
+    </p>
+  </div>
+</section>
+
+<style>
+  .product-grid {
+    list-style: none;
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .product-card__media {
+    position: relative;
+  }
+  .product-card__media :global(.ph) {
+    border-radius: 0;
+  }
+  .product-card__badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-on-gold);
+    background: var(--color-gold);
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+  }
+  .product-card__body {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+    flex: 1;
+  }
+  .product-card__cat {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-sage);
+  }
+  .product-card h3 {
+    margin: 0.35rem 0 0.1rem;
+  }
+  .product-card__brand {
+    font-size: 0.9rem;
+    color: var(--color-ink-soft);
+    margin: 0 0 0.6rem;
+  }
+  .product-card__desc {
+    font-size: 0.98rem;
+    color: var(--color-ink-soft);
+    margin: 0;
+  }
+  .product-card__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1.1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .product-card__price {
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+  /* Hele kortet klikkbart (Heydon Pickering-mønster): «Reserver» er én lenke
+     som strekkes over kortet, så både bilde og tekst fører til reservasjon. */
+  .product-card__reserve::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .product-card:hover {
+    border-color: var(--color-bronze);
+    box-shadow: 0 14px 32px -20px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+  }
+  .product-card:focus-within {
+    box-shadow: 0 0 0 3px var(--color-focus);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .product-card {
+      transition: none;
+    }
+    .product-card:hover {
+      transform: none;
+    }
+  }
+  .product-note {
+    margin-top: 1.75rem;
+    color: var(--color-ink-soft);
+  }
+
+  @media (min-width: 40rem) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .product-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

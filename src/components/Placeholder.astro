@@ -1,0 +1,136 @@
+---
+/**
+ * Bildevisning med rolig merkevareramme.
+ * - Uten `src`: dekorativ SVG-gradient (ren plassholder).
+ * - Med `src`: viser et faktisk bilde.
+ *   `fit="natural"` (default): rammen følger bildets EGNE proporsjoner (lest ved
+ *     bygg) – brukes for enkeltbilder (hero/om), ingen beskæring, ingen tomrom.
+ *   `fit="cover"`: rammen bruker et FAST forhold (`ratio`) og bildet beskjæres
+ *     (object-fit: cover). Brukes i kort-rutenett (produkter) slik at alle kort
+ *     ligger likt uansett hvilket bilde eieren laster opp – waterproof handover.
+ * `label`  : tekst i merkelappen (default «Plassholder» når bilde er satt)
+ * `variant`: motiv/farger for SVG-fallback
+ * `ratio`  : aspekt for rammen (alltid brukt i `cover`, ellers fallback)
+ * `src`    : bildekilde (valgfri, public-sti som "/images/..." )
+ * `alt`    : alternativ tekst (tom = dekorativt)
+ * `fit`    : "natural" (følg bildet) | "cover" (fast ramme + beskæring)
+ */
+import path from "node:path";
+import sharp from "sharp";
+
+interface Props {
+  label?: string;
+  variant?: "hair" | "color" | "care" | "product" | "salon";
+  ratio?: string;
+  src?: string;
+  alt?: string;
+  fit?: "natural" | "cover";
+}
+const {
+  label,
+  variant = "hair",
+  ratio = "4 / 3",
+  src,
+  alt = "",
+  fit = "natural",
+} = Astro.props;
+
+// Les bildets faktiske dimensjoner ved bygg. I "natural" lar vi rammen følge
+// bildet (ingen CLS, ingen beskæring). I "cover" beholder vi det faste
+// `ratio`-forholdet slik at rutenett-kort ligger helt likt.
+let imgWidth: number | undefined;
+let imgHeight: number | undefined;
+let boxRatio = ratio;
+if (src && src.startsWith("/")) {
+  try {
+    const filePath = path.join(process.cwd(), "public", src);
+    const meta = await sharp(filePath).metadata();
+    if (meta.width && meta.height) {
+      imgWidth = meta.width;
+      imgHeight = meta.height;
+      if (fit === "natural") {
+        boxRatio = `${meta.width} / ${meta.height}`;
+      }
+    }
+  } catch {
+    // Faller tilbake til `ratio`-prop hvis bildet ikke kan leses.
+  }
+}
+
+const palettes: Record<string, [string, string]> = {
+  hair: ["#e9d8c4", "#c9a888"],
+  color: ["#e7c9bd", "#b07a68"],
+  care: ["#d9ddcd", "#a8b294"],
+  product: ["#efe3d4", "#d8c2a6"],
+  salon: ["#e3d3c2", "#bda489"],
+};
+const [c1, c2] = palettes[variant] ?? palettes.hair;
+const uid = Math.random().toString(36).slice(2, 8);
+const tag = label ?? (src ? "Plassholder" : undefined);
+---
+
+<div class="ph" style={`--ratio:${boxRatio}`} aria-hidden={src ? undefined : "true"}>
+  {
+    src ? (
+      <img
+        class="ph__img"
+        src={src}
+        alt={alt}
+        width={fit === "natural" ? imgWidth : undefined}
+        height={fit === "natural" ? imgHeight : undefined}
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="presentation">
+        <defs>
+          <linearGradient id={`g-${uid}`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color={c1} />
+            <stop offset="1" stop-color={c2} />
+          </linearGradient>
+        </defs>
+        <rect width="400" height="300" fill={`url(#g-${uid})`} />
+        <g fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2">
+          <path d="M70 250 C 120 120, 200 120, 250 30" />
+          <path d="M95 255 C 145 130, 225 130, 275 40" />
+          <path d="M120 260 C 170 140, 250 140, 300 50" />
+        </g>
+        <circle cx="312" cy="70" r="34" fill="rgba(255,255,255,0.22)" />
+      </svg>
+    )
+  }
+  {tag && <span class="ph__tag">{tag}</span>}
+</div>
+
+<style>
+  .ph {
+    position: relative;
+    aspect-ratio: var(--ratio);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--color-sand-deep);
+  }
+  .ph svg,
+  .ph__img {
+    width: 100%;
+    height: 100%;
+  }
+  .ph__img {
+    object-fit: cover;
+    display: block;
+  }
+  .ph__tag {
+    position: absolute;
+    left: 0.75rem;
+    bottom: 0.75rem;
+    background: rgba(42, 36, 32, 0.72);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+  }
+</style>
+

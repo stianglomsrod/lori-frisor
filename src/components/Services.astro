@@ -1,0 +1,165 @@
+---
+import { getServices, getSettings } from "@lib/content";
+
+const services = await getServices();
+const { booking } = await getSettings();
+
+const formatPrice = (n: number | null) =>
+  n === null ? "Pris etter konsultasjon" : `fra ${n} kr`;
+---
+
+<section class="section" id="tjenester" aria-labelledby="tjenester-tittel">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Tjenester</p>
+      <h2 id="tjenester-tittel">Behandlinger for hele familien</h2>
+      <p>
+        Fra klipp og farge til pleie og styling, alltid tilpasset deg. Velg en
+        tjeneste og bestill time når det passer.
+      </p>
+    </div>
+
+    <ul class="service-grid reveal" role="list">
+      {
+        services.map((service) => (
+          <li class="service-card card">
+            <div class="service-card__body">
+              <span class="service-card__cat">{service.category}</span>
+              <h3 class="service-card__title">
+                <a
+                  class="service-card__link"
+                  href={booking.url}
+                  target="_blank"
+                  rel="noopener"
+                  aria-describedby={`svc-cta-${service.id}`}
+                >
+                  {service.title}
+                </a>
+              </h3>
+              <p>{service.description}</p>
+            </div>
+            <div class="service-card__foot">
+              <span class="service-card__price">{formatPrice(service.priceFrom)}</span>
+              <span
+                class="service-card__cta"
+                id={`svc-cta-${service.id}`}
+                aria-hidden="true"
+              >
+                Bestill <span class="service-card__arrow">→</span>
+              </span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .service-grid {
+    list-style: none;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+  .service-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem;
+    position: relative;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .service-card__cat {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-sage);
+    margin-bottom: 0.5rem;
+  }
+  .service-card h3 {
+    margin-bottom: 0.35rem;
+  }
+  .service-card p {
+    color: var(--color-ink-soft);
+    font-size: 1rem;
+    margin: 0;
+  }
+  .service-card__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .service-card__price {
+    font-weight: 600;
+  }
+  .service-card__link {
+    color: inherit;
+    text-decoration: none;
+  }
+  /* Hele kortet klikkbart (Heydon Pickering-mønster): én lenke, ett tab-stopp. */
+  .service-card__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .service-card__link:focus {
+    outline: none;
+  }
+  .service-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    color: var(--color-accent-dark);
+    white-space: nowrap;
+  }
+  .service-card__arrow {
+    transition: transform 0.2s ease;
+  }
+  .service-card:hover {
+    border-color: var(--color-bronze);
+    box-shadow: 0 14px 32px -20px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+  }
+  .service-card:hover .service-card__cta {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .service-card:hover .service-card__arrow {
+    transform: translateX(3px);
+  }
+  .service-card:focus-within {
+    box-shadow: 0 0 0 3px var(--color-focus);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .service-card,
+    .service-card__arrow {
+      transition: none;
+    }
+    .service-card:hover {
+      transform: none;
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .service-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .service-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

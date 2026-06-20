@@ -1,0 +1,28 @@
+hero:
+  eyebrow: Frisør i Halden
+  titleStart: "Velstelt hår,"
+  titleAccent: uten stress
+  lead: >-
+    Lori Frisør er en moderne salong midt i Halden. Vi tar oss av klipp, farge
+    og behandlinger for hele familien, i rolige og trygge omgivelser. Timen
+    booker du enkelt på nett.
+  bullets:
+    - Enkel booking på nett
+    - Sentralt på Torget 2
+    - Klipp & farge for alle
+  image: hero-salon.jpg
+  imageAlt: Plassholder – bilde fra salongen
+about:
+  eyebrow: Om oss
+  title: En frisør du kan stole på
+  body: >-
+    Hos Lori Frisør i Halden tar vi oss tid til deg. Vi tror et godt klipp
+    begynner med en god prat. Derfor blir vi kjent med håret ditt og hva du ser
+    for deg, før saksa kommer fram. Målet er et resultat som er like fint hjemme
+    som i salongstolen.
+  points:
+    - Erfarne frisører som lytter til hva du faktisk vil ha
+    - Rolig atmosfære – godt for både liten og stor
+    - Produkter og pleie tilpasset ditt hår
+  image: about-salon.jpg
+  imageAlt: Plassholder – bilde fra salongen

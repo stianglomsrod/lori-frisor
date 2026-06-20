@@ -1,0 +1,44 @@
+items:
+  - name: Fuktgivende sjampo
+    brand: Placeholder-merke
+    description: Mild sjampo for tørt og farget hår. Gir fukt uten å tynge.
+    price: 289
+    category: Pleie
+    featured: true
+    image: prod-fukt-sjampo.jpg
+  - name: Reparerende balsam
+    brand: Placeholder-merke
+    description: >-
+      Styrker og glatter slitne lengder for mykere, glansfullt hår.
+    price: 309
+    category: Pleie
+    featured: false
+    image: prod-reparerende-balsam.jpg
+  - name: Varmebeskytter
+    brand: Placeholder-merke
+    description: Beskytter mot føhn og rettetang opptil 230°C.
+    price: 245
+    category: Styling
+    featured: false
+    image: prod-varmebeskytter.jpg
+  - name: Teksturspray
+    brand: Placeholder-merke
+    description: Lett saltspray for naturlig volum og matt finish.
+    price: 259
+    category: Styling
+    featured: true
+    image: prod-tekstur-spray.jpg
+  - name: Fargebevarende sjampo
+    brand: Placeholder-merke
+    description: Holder fargen lengre og motvirker uønskede toner.
+    price: 279
+    category: Farge
+    featured: false
+    image: prod-fargebevarende-sjampo.jpg
+  - name: Keramisk rundbørste
+    brand: Placeholder-merke
+    description: For glatt føhnresultat og enkel forming hjemme.
+    price: 349
+    category: Verktøy
+    featured: false
+    image: prod-rund-borste.jpg

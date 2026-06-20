@@ -1,0 +1,20 @@
+name: Lori Frisør
+tagline: Frisørsalong i hjertet av Halden
+description: >-
+  Lori Frisør er en moderne frisørsalong i Halden. Klipp, farge, balayage og
+  behandlinger for hele familien. Bestill time enkelt på nett.
+city: Halden
+url: https://www.lorifrisor.no
+contact:
+  addressStreet: Torget 2
+  addressZip: "1767"
+  addressCity: Halden
+  phone: "45050677"
+  phoneDisplay: "450 50 677"
+  email: cindy@lori.no
+social:
+  facebook: https://www.facebook.com/LoriFrisor
+  instagram: https://www.instagram.com/lorifrisor/
+booking:
+  url: https://bestill.timma.no/lorifrisor
+  label: Bestill time

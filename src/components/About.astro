@@ -1,0 +1,87 @@
+---
+import Placeholder from "./Placeholder.astro";
+import { getHomepage } from "@lib/content";
+
+const { about } = await getHomepage();
+---
+
+<section class="section" id="om" aria-labelledby="om-tittel">
+  <div class="container about">
+    <div class="about__media reveal">
+      <Placeholder
+        src={about.image}
+        alt={about.imageAlt}
+        variant="salon"
+        ratio="3 / 4"
+        label="Plassholder"
+      />
+    </div>
+    <div class="about__content reveal">
+      <p class="eyebrow">{about.eyebrow}</p>
+      <h2 id="om-tittel">{about.title}</h2>
+      <p>
+        {about.body}
+      </p>
+      <ul class="about__list" role="list">
+        {
+          about.points.map((point) => (
+            <li>
+              <span class="about__check" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+              </span>
+              {point}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: center;
+  }
+  .about__media {
+    max-width: 24rem;
+    width: 100%;
+    margin-inline: auto;
+  }
+  .about__list {
+    list-style: none;
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1.5rem;
+  }
+  .about__list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-weight: 500;
+  }
+  .about__check {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background: var(--color-charcoal);
+    color: var(--color-gold);
+  }
+  .about__check svg {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  @media (min-width: 56rem) {
+    .about {
+      grid-template-columns: 0.85fr 1.15fr;
+    }
+    .about__media {
+      margin-inline: 0;
+    }
+  }
+</style>

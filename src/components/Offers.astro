@@ -1,0 +1,97 @@
+---
+import { getOffers, getSettings } from "@lib/content";
+
+const offers = await getOffers();
+const { booking } = await getSettings();
+---
+
+{
+  offers.length > 0 && (
+    <section class="section" id="tilbud" aria-labelledby="tilbud-tittel">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Tilbud</p>
+          <h2 id="tilbud-tittel">Aktuelle tilbud nå</h2>
+          <p>Gode grunner til å booke din neste time hos oss.</p>
+        </div>
+
+        <ul class="offer-grid reveal" role="list">
+          {offers.map((offer) => (
+            <li class="offer-card">
+              <span class="offer-card__badge">{offer.badge}</span>
+              <h3>{offer.title}</h3>
+              <p>{offer.description}</p>
+              <div class="offer-card__foot">
+                <a class="btn btn--ghost" href={booking.url} target="_blank" rel="noopener">
+                  Bestill time
+                </a>
+                {offer.fineprint && (
+                  <p class="offer-card__fine">{offer.fineprint}</p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .offer-grid {
+    list-style: none;
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+  .offer-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.5rem, 4vw, 2rem);
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--color-charcoal) 0%, #3f352e 100%);
+    color: #f4ece2;
+    overflow: hidden;
+  }
+  .offer-card__badge {
+    align-self: flex-start;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-on-gold);
+    background: var(--color-gold);
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .offer-card h3 {
+    color: #fff;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+  }
+  .offer-card p {
+    color: #e7ddd1;
+    margin-bottom: 1.25rem;
+  }
+  .offer-card__foot {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .offer-card__foot .btn {
+    align-self: flex-start;
+  }
+  .offer-card__fine {
+    font-size: 0.82rem;
+    color: #bdb1a3;
+    margin: 0;
+  }
+
+  @media (min-width: 48rem) {
+    .offer-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

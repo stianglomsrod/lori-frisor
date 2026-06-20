@@ -1,0 +1,306 @@
+/* =====================================================================
+   Lori Frisør – globalt designsystem
+   Varm, rolig, lettlest palett. Mobil-først. WCAG 2.2 AA i sikte.
+   ===================================================================== */
+
+/* ---- Design tokens ---- */
+:root {
+  /* Merkevare: gull + kull (fra salongens logo) på lys, lettlest base */
+  --color-cream: #faf7f1; /* sidebakgrunn */
+  --color-sand: #f0e9dd; /* alternativ seksjonsbakgrunn */
+  --color-sand-deep: #e6dac6;
+  --color-ink: #26211c; /* charcoal – hovedtekst */
+  --color-charcoal: #2b2926; /* mørke seksjoner */
+  --color-ink-soft: #57504a; /* sekundær tekst – AA på cream */
+  --color-gold: #c6a53f; /* gull – fyll/CTA (mørk tekst oppå) */
+  --color-gold-deep: #a8852a; /* dypere gull – aksent på mørkt */
+  --color-bronze: #7a5c12; /* gull-tekst på lys bakgrunn (AA-sikker) */
+  --color-gold-soft: #efe6cf; /* gulltonet bakgrunn */
+  --color-on-gold: #26211c; /* tekst på gull (alltid mørk, begge moduser) */
+  /* Aliaser brukt av komponenter */
+  --color-accent: var(--color-gold); /* fyll/CTA */
+  --color-accent-dark: var(--color-bronze); /* aksent-tekst på lys bakgrunn */
+  --color-sage: var(--color-bronze); /* sekundær aksent-tekst */
+  --color-line: #e4dac9; /* hårfine skiller */
+  --color-white: #ffffff; /* kort-/flateflate (mørkner i dark mode) */
+  --color-focus: #1b3a66; /* tydelig fokusfarge med høy kontrast */
+
+  /* Typografi */
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body:
+    "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fs-base: 1.125rem; /* 18px – lettlest for alle aldre */
+  --lh-base: 1.6;
+
+  /* Mellomrom & form */
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow-sm: 0 1px 2px rgba(42, 36, 32, 0.06);
+  --shadow-md: 0 6px 24px rgba(42, 36, 32, 0.1);
+  --maxw: 72rem;
+  --section-y: clamp(3.5rem, 8vw, 6rem);
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+/* ---- Mørk modus: følger systemets fargevalg ---- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-cream: #1b1815; /* sidebakgrunn (dyp kull) */
+    --color-sand: #221f1a; /* alternativ seksjonsbakgrunn */
+    --color-sand-deep: #2c2820; /* placeholder-flate */
+    --color-ink: #f1eada; /* hovedtekst (varm cream) */
+    --color-ink-soft: #c0b6a4; /* sekundær tekst – AA på mørk */
+    --color-bronze: #e0c578; /* gull-tekst på mørk bakgrunn (AA) */
+    --color-gold-soft: #36301f; /* gulltonet flate, dempet */
+    --color-line: #3a352d; /* hårfine skiller */
+    --color-white: #262219; /* kort-/flateflate i mørk modus */
+    --color-focus: #9ec3ff; /* lysere fokusfarge for kontrast */
+    /* Aksent-tekst peker nå på lys gull for kontrast på mørkt */
+    --color-accent-dark: var(--color-bronze);
+    --color-sage: var(--color-bronze);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ---- Reset / grunnlag ---- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Kompenser for fast header ved anker-hopp */
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  color: var(--color-ink);
+  background: var(--color-cream);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+picture {
+  max-width: 100%;
+  display: block;
+  height: auto;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--color-ink);
+  margin: 0 0 0.5em;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: clamp(2.25rem, 6vw, 3.75rem);
+}
+h2 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+h3 {
+  font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+  font-weight: 600;
+}
+
+p {
+  margin: 0 0 1rem;
+  max-width: 60ch;
+}
+
+a {
+  color: var(--color-accent-dark);
+  text-underline-offset: 3px;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+/* ---- Tilgjengelighet: fokus & hopp-lenke ---- */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  z-index: 100;
+  background: var(--color-charcoal);
+  color: #faf7f1;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- Layout-hjelpere ---- */
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+/* Tynn trust-stripe skal ikke omkranses av full seksjonsluft –
+   stram inn luften rett under stripa så den ikke leses som dødt rom. */
+.trust + .section {
+  padding-top: clamp(2rem, 4vw, 3rem);
+}
+.section--sand {
+  background: var(--color-sand);
+}
+
+/* ---- Knapper ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem; /* berøringsvennlig (>=44px) */
+  padding: 0.75rem 1.5rem;
+  font: inherit;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: var(--color-on-gold);
+}
+.btn--primary:hover {
+  background: var(--color-gold-deep);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+.btn--secondary:hover {
+  background: var(--color-ink);
+  color: var(--color-cream);
+}
+
+.btn--ghost {
+  background: var(--color-white);
+  color: var(--color-ink);
+  border-color: var(--color-line);
+  box-shadow: var(--shadow-sm);
+}
+.btn--ghost:hover {
+  border-color: var(--color-ink);
+}
+
+/* ---- Seksjonsoverskrift ---- */
+.section-head {
+  max-width: 48rem;
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent-dark);
+  margin-bottom: 0.75rem;
+}
+.section-head p {
+  font-size: 1.15rem;
+  color: var(--color-ink-soft);
+}
+
+/* ---- Kort (delt) ---- */
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---- Diskré scroll-animasjoner (kun med JS + uten bevegelses-aversjon) ----
+   Innholdet er alltid synlig uten JS. Vi skjuler kun når .js er satt,
+   slik at brukere uten JavaScript aldri møter tom skjerm. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease;
+    will-change: opacity, transform;
+  }
+  html.js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- Redusert bevegelse ---- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  /* Aldri skjul innhold bak en animasjon for disse brukerne */
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

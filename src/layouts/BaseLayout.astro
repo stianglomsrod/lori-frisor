@@ -1,0 +1,104 @@
+---
+import "../styles/global.css";
+import { getSettings, getOpeningHours } from "@lib/content";
+
+const { site, contact, social } = await getSettings();
+const openingHours = await getOpeningHours();
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${site.name} – ${site.tagline}`,
+  description = site.description,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+
+// Strukturert data (LocalBusiness) – styrker lokal synlighet i søk.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HairSalon",
+  name: site.name,
+  description: site.description,
+  url: site.url,
+  telephone: `+47${contact.phone}`,
+  email: contact.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: contact.addressStreet,
+    postalCode: contact.addressZip,
+    addressLocality: contact.addressCity,
+    addressCountry: "NO",
+  },
+  sameAs: [social.facebook, social.instagram],
+  openingHours: openingHours
+    .filter((d) => !("closed" in d && d.closed))
+    .map((d) => `${d.day.slice(0, 2)} ${d.hours}`),
+};
+---
+
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Markér at JS er aktivt før paint, så scroll-avsløring ikke gir glimt -->
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="nb_NO" />
+    <meta property="og:site_name" content={site.name} />
+
+    <!-- Skrifter: lastes med swap og degraderer pent til system-skrift -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap"
+    />
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(jsonLd)}
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#hovedinnhold">Hopp til hovedinnhold</a>
+    <slot />
+
+    <script>
+      // Diskré scroll-avsløring: legg til .is-visible når elementet kommer i syne.
+      const items = document.querySelectorAll<HTMLElement>(".reveal");
+      if (items.length && "IntersectionObserver" in window) {
+        const io = new IntersectionObserver(
+          (entries, obs) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                obs.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: "0px 0px -10% 0px", threshold: 0.1 },
+        );
+        items.forEach((el) => io.observe(el));
+      } else {
+        items.forEach((el) => el.classList.add("is-visible"));
+      }
+    </script>
+  </body>
+</html>

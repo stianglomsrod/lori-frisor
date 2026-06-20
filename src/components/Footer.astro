@@ -1,8 +1,11 @@
 ---
 import Logo from "./Logo.astro";
-import { navLinks } from "@data/site";
 import { getSettings } from "@lib/content";
+import { resolveLocale } from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
 
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
 const { contact, social, booking } = await getSettings();
 const year = new Date().getFullYear();
 ---
@@ -11,21 +14,21 @@ const year = new Date().getFullYear();
   <div class="container site-footer__inner">
     <div class="site-footer__brand">
       <Logo light />
-      <p>Frisørsalong i hjertet av Halden. Velkommen innom.</p>
+      <p>{t.footer.brand}</p>
       <a class="btn btn--primary" href={booking.url} target="_blank" rel="noopener">
-        {booking.label}
+        {t.cta.book}
       </a>
     </div>
 
-    <nav class="site-footer__nav" aria-label="Bunnmeny">
-      <h2 class="site-footer__heading">Snarveier</h2>
+    <nav class="site-footer__nav" aria-label={t.footer.navAria}>
+      <h2 class="site-footer__heading">{t.footer.shortcuts}</h2>
       <ul role="list">
-        {navLinks.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+        {t.nav.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
       </ul>
     </nav>
 
     <div class="site-footer__contact">
-      <h2 class="site-footer__heading">Kontakt</h2>
+      <h2 class="site-footer__heading">{t.footer.contact}</h2>
       <address>
         <a href={contact.mapsUrl} target="_blank" rel="noopener">
           {contact.addressStreet}, {contact.addressCity}
@@ -41,10 +44,10 @@ const year = new Date().getFullYear();
   </div>
 
   <div class="container site-footer__bottom">
-    <p>© {year} Lori Frisør. Alle rettigheter forbeholdt.</p>
+    <p>{t.footer.copyright(year)}</p>
     <p class="site-footer__bottom-right">
-      <span>Booking via Timma.</span>
-      <a class="site-footer__edit" href="/keystatic" rel="nofollow">Rediger siden</a>
+      <span>{t.footer.bookingVia}</span>
+      <a class="site-footer__edit" href="/keystatic" rel="nofollow">{t.footer.edit}</a>
     </p>
   </div>
 </footer>

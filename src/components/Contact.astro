@@ -1,6 +1,10 @@
 ---
 import { getSettings, getOpeningHours } from "@lib/content";
+import { resolveLocale } from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
 
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
 const { contact, booking, social } = await getSettings();
 const openingHours = await getOpeningHours();
 
@@ -9,7 +13,7 @@ const openingHours = await getOpeningHours();
 const mapQuery = encodeURIComponent(
   `${contact.addressStreet}, ${contact.addressZip} ${contact.addressCity}`
 );
-const mapEmbedUrl = `https://maps.google.com/maps?q=${mapQuery}&z=15&hl=no&output=embed`;
+const mapEmbedUrl = `https://maps.google.com/maps?q=${mapQuery}&z=15&hl=${locale}&output=embed`;
 // Deep-link til veibeskrivelse – åpner kart-appen direkte på mobil.
 const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${mapQuery}`;
 ---
@@ -17,64 +21,96 @@ const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m
 <section class="section section--sand" id="kontakt" aria-labelledby="kontakt-tittel">
   <div class="container">
     <div class="section-head reveal">
-      <p class="eyebrow">Kontakt</p>
-      <h2 id="kontakt-tittel">Finn oss i Halden</h2>
-      <p>Sentralt på Torget. Stikk innom, ring, eller bestill time på nett.</p>
+      <p class="eyebrow">{t.contact.eyebrow}</p>
+      <h2 id="kontakt-tittel">{t.contact.title}</h2>
+      <p>{t.contact.intro}</p>
     </div>
 
     <div class="contact reveal">
       <div class="contact__card card">
-        <h3>Besøk &amp; kontakt</h3>
+        <h3>{t.contact.visitTitle}</h3>
         <address class="contact__address">
           <p>
-            <span class="contact__label">Adresse</span>
+            <span class="contact__label">{t.contact.address}</span>
             <a href={contact.mapsUrl} target="_blank" rel="noopener">
               {contact.addressStreet}, {contact.addressZip} {contact.addressCity}
             </a>
           </p>
           <p>
-            <span class="contact__label">Telefon</span>
+            <span class="contact__label">{t.contact.phone}</span>
             <a href={`tel:${contact.phone}`}>{contact.phoneDisplay}</a>
           </p>
           <p>
-            <span class="contact__label">E-post</span>
+            <span class="contact__label">{t.contact.email}</span>
             <a href={`mailto:${contact.email}`}>{contact.email}</a>
           </p>
         </address>
 
         <div class="contact__social">
-          <a href={social.facebook} target="_blank" rel="noopener">Facebook</a>
-          <a href={social.instagram} target="_blank" rel="noopener">Instagram</a>
+          <a href={social.facebook} target="_blank" rel="noopener">
+            <svg
+              class="contact__social-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+            </svg>
+            Facebook
+          </a>
+          <a href={social.instagram} target="_blank" rel="noopener">
+            <svg
+              class="contact__social-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37Z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg>
+            Instagram
+          </a>
         </div>
 
         <a class="btn btn--primary contact__cta" href={booking.url} target="_blank" rel="noopener">
-          {booking.label}
+          {t.cta.book}
         </a>
       </div>
 
       <div class="contact__card card">
-        <h3>Åpningstider</h3>
+        <h3>{t.contact.hoursTitle}</h3>
         <table class="hours">
-          <caption class="visually-hidden">Åpningstider per dag</caption>
+          <caption class="visually-hidden">{t.contact.hoursCaption}</caption>
           <tbody>
             {
               openingHours.map((d) => (
-                <tr class={"closed" in d && d.closed ? "hours__closed" : ""}>
-                  <th scope="row">{d.day}</th>
-                  <td>{d.hours}</td>
+                <tr class={d.closed ? "hours__closed" : ""}>
+                  <th scope="row">{t.days[d.day] ?? d.day}</th>
+                  <td>{d.closed ? t.closed : d.hours}</td>
                 </tr>
               ))
             }
           </tbody>
         </table>
         <p class="contact__note">
-          Avbestilling må skje senest 24 timer før timen.
+          {t.contact.note}
         </p>
       </div>
 
       <div class="contact__map">
         <iframe
-          title={`Kart som viser ${contact.addressStreet}, ${contact.addressZip} ${contact.addressCity}`}
+          title={t.contact.mapTitle(
+            `${contact.addressStreet}, ${contact.addressZip} ${contact.addressCity}`,
+          )}
           src={mapEmbedUrl}
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
@@ -84,7 +120,7 @@ const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m
 
       <p class="contact__directions">
         <a class="btn btn--secondary" href={mapDirectionsUrl} target="_blank" rel="noopener">
-          Få veibeskrivelse
+          {t.contact.directions}
         </a>
       </p>
     </div>
@@ -135,6 +171,14 @@ const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m
   }
   .contact__social a {
     font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .contact__social-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex: none;
   }
   .contact__cta {
     width: 100%;

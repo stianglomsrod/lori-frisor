@@ -5,9 +5,9 @@ innholdet selv – uten å kunne kode, og uten å kunne ødelegge noe.
 
 Du forholder deg til **to lenker**:
 
-| Hva | Lenke | Hva du gjør her |
-| --- | --- | --- |
-| **Nettsiden** | `https://DITT-DOMENE` | Se siden slik kundene ser den |
+| Hva            | Lenke                           | Hva du gjør her                           |
+| -------------- | ------------------------------- | ----------------------------------------- |
+| **Nettsiden**  | `https://DITT-DOMENE`           | Se siden slik kundene ser den             |
 | **Redigering** | `https://DITT-DOMENE/keystatic` | Endre tekst, priser, bilder, åpningstider |
 
 > Tips: Du finner også en liten **«Rediger siden»**-lenke helt nederst på
@@ -41,28 +41,33 @@ Menyen til venstre har to deler:
 ## 3. Vanlige oppgaver
 
 ### Endre en tekst
+
 1. Klikk på seksjonen i menyen (f.eks. **Forsidetekst**).
 2. Skriv rett i feltet.
 3. Klikk **Save** (Lagre) øverst til høyre.
 
 ### Endre en pris
+
 1. Gå til **Tjenester & priser**.
 2. Klikk på tjenesten i listen.
 3. Endre tallet i **Fra-pris**. (La feltet stå tomt for «Pris etter konsultasjon».)
 4. **Save**.
 
 ### Bytte et bilde
+
 1. Åpne seksjonen med bildet (f.eks. et produkt eller **Forsidetekst**).
 2. Klikk på bildefeltet og last opp et nytt bilde fra maskinen.
 3. Skriv en kort **bildebeskrivelse** (hjelper svaksynte og Google).
 4. **Save**.
 
 ### Endre åpningstider
+
 1. Gå til **Åpningstider**.
 2. Endre tidene, eller huk av **Stengt** på en dag.
 3. **Save**.
 
 ### Legge til / fjerne et tilbud eller produkt
+
 - Bruk **+**-knappen for å legge til et nytt element i listen.
 - Bruk håndtaket til venstre for å **dra og endre rekkefølge**.
 - Bruk søppelbøtte-ikonet for å fjerne.

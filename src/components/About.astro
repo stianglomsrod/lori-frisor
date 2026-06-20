@@ -1,8 +1,12 @@
 ---
 import Placeholder from "./Placeholder.astro";
 import { getHomepage } from "@lib/content";
+import { resolveLocale } from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
 
-const { about } = await getHomepage();
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const { about } = await getHomepage(locale);
 ---
 
 <section class="section" id="om" aria-labelledby="om-tittel">
@@ -13,7 +17,7 @@ const { about } = await getHomepage();
         alt={about.imageAlt}
         variant="salon"
         ratio="3 / 4"
-        label="Plassholder"
+        label={t.common.placeholder}
       />
     </div>
     <div class="about__content reveal">

@@ -1,27 +1,26 @@
 ---
 import Placeholder from "./Placeholder.astro";
 import { getProducts, getSettings } from "@lib/content";
+import { resolveLocale } from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
 
-const products = await getProducts();
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const products = await getProducts(locale);
 const { contact } = await getSettings();
 
 // Lett variant av click-and-collect: kunden reserverer og henter i salong.
 // Forhåndsutfylt SMS/telefon – ingen nettbetaling i denne fasen.
 const reserveHref = (name: string) =>
-  `sms:${contact.phone}?body=${encodeURIComponent(
-    `Hei! Jeg vil gjerne reservere «${name}» for henting i salongen.`
-  )}`;
+  `sms:${contact.phone}?body=${encodeURIComponent(t.products.smsBody(name))}`;
 ---
 
 <section class="section section--sand" id="produkter" aria-labelledby="produkter-tittel">
   <div class="container">
     <div class="section-head reveal">
-      <p class="eyebrow">Produkter</p>
-      <h2 id="produkter-tittel">Ta salongkvaliteten med hjem</h2>
-      <p>
-        Et utvalg favoritter vi bruker og anbefaler. Reservér enkelt, så legger
-        vi det klart til henting neste gang du er innom – du betaler i salongen.
-      </p>
+      <p class="eyebrow">{t.products.eyebrow}</p>
+      <h2 id="produkter-tittel">{t.products.title}</h2>
+      <p>{t.products.intro}</p>
     </div>
 
     <ul class="product-grid reveal" role="list">
@@ -34,10 +33,10 @@ const reserveHref = (name: string) =>
                 variant="product"
                 ratio="1 / 1"
                 fit="cover"
-                label="Plassholder"
+                label={t.common.placeholder}
               />
               {product.featured && (
-                <span class="product-card__badge">Anbefalt</span>
+                <span class="product-card__badge">{t.products.recommended}</span>
               )}
             </div>
             <div class="product-card__body">
@@ -46,10 +45,10 @@ const reserveHref = (name: string) =>
               <p class="product-card__brand">{product.brand}</p>
               <p class="product-card__desc">{product.description}</p>
               <div class="product-card__foot">
-                <span class="product-card__price">{product.price} kr</span>
+                <span class="product-card__price">{t.products.price(product.price)}</span>
                 <a class="btn btn--ghost product-card__reserve" href={reserveHref(product.name)}>
-                  Reserver
-                  <span class="visually-hidden"> {product.name} for henting</span>
+                  {t.products.reserve}
+                  <span class="visually-hidden">{t.products.reserveHidden(product.name)}</span>
                 </a>
               </div>
             </div>
@@ -59,9 +58,8 @@ const reserveHref = (name: string) =>
     </ul>
 
     <p class="product-note">
-      Foretrekker du å ringe? Slå oss på
-      <a href={`tel:${contact.phone}`}>{contact.phoneDisplay}</a>, så ordner vi
-      reservasjonen for deg.
+      {t.products.noteBefore}
+      <a href={`tel:${contact.phone}`}>{contact.phoneDisplay}</a>{t.products.noteAfter}
     </p>
   </div>
 </section>

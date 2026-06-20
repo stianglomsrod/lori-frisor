@@ -1,7 +1,17 @@
 ---
 import "../styles/global.css";
 import { getSettings, getOpeningHours } from "@lib/content";
+import {
+  resolveLocale,
+  htmlLang,
+  ogLocale,
+  locales,
+  localeHome,
+} from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
 
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
 const { site, contact, social } = await getSettings();
 const openingHours = await getOpeningHours();
 
@@ -11,18 +21,25 @@ interface Props {
 }
 
 const {
-  title = `${site.name} – ${site.tagline}`,
-  description = site.description,
+  title = `${site.name} – ${t.seo.tagline}`,
+  description = t.seo.description,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+// hreflang-alternativer for søkemotorer (én URL per språk).
+const alternates = locales.map((loc) => ({
+  hreflang: htmlLang[loc],
+  ogLocale: ogLocale[loc],
+  href: new URL(localeHome(loc), Astro.site ?? site.url).href,
+}));
+const defaultHref = alternates[0].href;
 
 // Strukturert data (LocalBusiness) – styrker lokal synlighet i søk.
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "HairSalon",
   name: site.name,
-  description: site.description,
+  description: t.seo.description,
   url: site.url,
   telephone: `+47${contact.phone}`,
   email: contact.email,
@@ -41,7 +58,7 @@ const jsonLd = {
 ---
 
 <!doctype html>
-<html lang="nb">
+<html lang={htmlLang[locale]}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -52,6 +69,12 @@ const jsonLd = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {
+      alternates.map((alt) => (
+        <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={defaultHref} />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
@@ -59,7 +82,14 @@ const jsonLd = {
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:locale" content="nb_NO" />
+    <meta property="og:locale" content={ogLocale[locale]} />
+    {
+      alternates
+        .filter((alt) => alt.ogLocale !== ogLocale[locale])
+        .map((alt) => (
+          <meta property="og:locale:alternate" content={alt.ogLocale} />
+        ))
+    }
     <meta property="og:site_name" content={site.name} />
 
     <!-- Skrifter: lastes med swap og degraderer pent til system-skrift -->
@@ -77,7 +107,7 @@ const jsonLd = {
     />
   </head>
   <body>
-    <a class="skip-link" href="#hovedinnhold">Hopp til hovedinnhold</a>
+    <a class="skip-link" href="#hovedinnhold">{t.skipLink}</a>
     <slot />
 
     <script>

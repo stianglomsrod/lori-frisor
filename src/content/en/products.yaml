@@ -1,0 +1,46 @@
+items:
+  - name: Moisturising shampoo
+    brand: Placeholder brand
+    description: >-
+      Gentle shampoo for dry and colour-treated hair. Adds moisture without
+      weighing hair down.
+    price: 289
+    category: Care
+    featured: true
+    image: prod-fukt-sjampo.jpg
+  - name: Repairing conditioner
+    brand: Placeholder brand
+    description: >-
+      Strengthens and smooths worn lengths for softer, glossier hair.
+    price: 309
+    category: Care
+    featured: false
+    image: prod-reparerende-balsam.jpg
+  - name: Heat protectant
+    brand: Placeholder brand
+    description: Protects against blow-dryers and straighteners up to 230°C.
+    price: 245
+    category: Styling
+    featured: false
+    image: prod-varmebeskytter.jpg
+  - name: Texture spray
+    brand: Placeholder brand
+    description: A light salt spray for natural volume and a matte finish.
+    price: 259
+    category: Styling
+    featured: true
+    image: prod-tekstur-spray.jpg
+  - name: Colour-protecting shampoo
+    brand: Placeholder brand
+    description: Keeps colour longer and counteracts unwanted tones.
+    price: 279
+    category: Colour
+    featured: false
+    image: prod-fargebevarende-sjampo.jpg
+  - name: Ceramic round brush
+    brand: Placeholder brand
+    description: For a smooth blow-dry result and easy styling at home.
+    price: 349
+    category: Tools
+    featured: false
+    image: prod-rund-borste.jpg

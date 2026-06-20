@@ -1,22 +1,23 @@
 ---
 import { getServices, getSettings } from "@lib/content";
+import { resolveLocale } from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
 
-const services = await getServices();
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const services = await getServices(locale);
 const { booking } = await getSettings();
 
 const formatPrice = (n: number | null) =>
-  n === null ? "Pris etter konsultasjon" : `fra ${n} kr`;
+  n === null ? t.services.onRequest : t.services.priceFrom(n);
 ---
 
 <section class="section" id="tjenester" aria-labelledby="tjenester-tittel">
   <div class="container">
     <div class="section-head reveal">
-      <p class="eyebrow">Tjenester</p>
-      <h2 id="tjenester-tittel">Behandlinger for hele familien</h2>
-      <p>
-        Fra klipp og farge til pleie og styling, alltid tilpasset deg. Velg en
-        tjeneste og bestill time når det passer.
-      </p>
+      <p class="eyebrow">{t.services.eyebrow}</p>
+      <h2 id="tjenester-tittel">{t.services.title}</h2>
+      <p>{t.services.intro}</p>
     </div>
 
     <ul class="service-grid reveal" role="list">
@@ -45,7 +46,7 @@ const formatPrice = (n: number | null) =>
                 id={`svc-cta-${service.id}`}
                 aria-hidden="true"
               >
-                Bestill <span class="service-card__arrow">→</span>
+                {t.services.book} <span class="service-card__arrow">→</span>
               </span>
             </div>
           </li>

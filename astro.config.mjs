@@ -11,6 +11,13 @@ import vercel from "@astrojs/vercel";
 export default defineConfig({
   site: "https://www.lorifrisor.no",
   trailingSlash: "ignore",
+  // Flerspråk: norsk er standard og bor på rot-URL («/»), engelsk på «/en/».
+  // Nye språk legges til her + i src/i18n/config.ts.
+  i18n: {
+    locales: ["no", "en"],
+    defaultLocale: "no",
+    routing: { prefixDefaultLocale: false },
+  },
   build: {
     inlineStylesheets: "auto",
   },

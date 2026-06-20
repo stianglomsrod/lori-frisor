@@ -1,16 +1,20 @@
 ---
 import { getSettings } from "@lib/content";
+import { resolveLocale } from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
 
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
 const { contact } = await getSettings();
 
 const items = [
-  { label: "Adresse", value: `${contact.addressStreet}, ${contact.addressCity}`, href: contact.mapsUrl, icon: "pin" },
-  { label: "Ring oss", value: contact.phoneDisplay, href: `tel:${contact.phone}`, icon: "phone" },
-  { label: "Drop-in & timer", value: "Man–fre", href: "#kontakt", icon: "clock" },
+  { label: t.trust.address, value: `${contact.addressStreet}, ${contact.addressCity}`, href: contact.mapsUrl, icon: "pin" },
+  { label: t.trust.callUs, value: contact.phoneDisplay, href: `tel:${contact.phone}`, icon: "phone" },
+  { label: t.trust.hours, value: t.trust.hoursValue, href: "#kontakt", icon: "clock" },
 ];
 ---
 
-<section class="trust" aria-label="Praktisk informasjon">
+<section class="trust" aria-label={t.trust.aria}>
   <div class="container trust__grid reveal">
     {
       items.map((item) => (

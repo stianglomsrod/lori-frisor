@@ -1,7 +1,11 @@
 ---
 import { getOffers, getSettings } from "@lib/content";
+import { resolveLocale } from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
 
-const offers = await getOffers();
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const offers = await getOffers(locale);
 const { booking } = await getSettings();
 ---
 
@@ -10,9 +14,9 @@ const { booking } = await getSettings();
     <section class="section" id="tilbud" aria-labelledby="tilbud-tittel">
       <div class="container">
         <div class="section-head reveal">
-          <p class="eyebrow">Tilbud</p>
-          <h2 id="tilbud-tittel">Aktuelle tilbud nå</h2>
-          <p>Gode grunner til å booke din neste time hos oss.</p>
+          <p class="eyebrow">{t.offers.eyebrow}</p>
+          <h2 id="tilbud-tittel">{t.offers.title}</h2>
+          <p>{t.offers.intro}</p>
         </div>
 
         <ul class="offer-grid reveal" role="list">
@@ -23,7 +27,7 @@ const { booking } = await getSettings();
               <p>{offer.description}</p>
               <div class="offer-card__foot">
                 <a class="btn btn--ghost" href={booking.url} target="_blank" rel="noopener">
-                  Bestill time
+                  {t.cta.book}
                 </a>
                 {offer.fineprint && (
                   <p class="offer-card__fine">{offer.fineprint}</p>

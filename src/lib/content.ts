@@ -8,6 +8,7 @@
  */
 import { createReader } from "@keystatic/core/reader";
 import keystaticConfig from "../../keystatic.config";
+import { type Locale, defaultLocale } from "@i18n/config";
 
 import {
   site as siteDefault,
@@ -138,7 +139,7 @@ const homepageFallback: Homepage = {
     eyebrow: "Frisør i Halden",
     titleStart: "Velstelt hår,",
     titleAccent: "uten stress",
-    lead: "Lori Frisør er en moderne salong midt i Halden. Vi tar oss av klipp, farge og behandlinger for hele familien, i rolige og trygge omgivelser. Timen booker du enkelt på nett.",
+    lead: "Lori Frisør er en moderne salong midt i Halden. Vi tar oss av klipp, farge og behandlinger for hele familien, i rolige og trygge omgivelser. Timen bestiller du enkelt på nett.",
     bullets: [
       "Enkel booking på nett",
       "Sentralt på Torget 2",
@@ -161,8 +162,14 @@ const homepageFallback: Homepage = {
   },
 };
 
-export async function getHomepage(): Promise<Homepage> {
-  const h = await reader.singletons.homepage.read();
+export async function getHomepage(
+  locale: Locale = defaultLocale,
+): Promise<Homepage> {
+  const h =
+    (await reader.singletons[`homepage_${locale}` as "homepage_no"].read()) ??
+    (locale !== defaultLocale
+      ? await reader.singletons.homepage_no.read()
+      : null);
   if (!h) return homepageFallback;
   return {
     hero: {
@@ -191,8 +198,14 @@ export async function getHomepage(): Promise<Homepage> {
   };
 }
 
-export async function getServices(): Promise<Service[]> {
-  const s = await reader.singletons.services.read();
+export async function getServices(
+  locale: Locale = defaultLocale,
+): Promise<Service[]> {
+  const s =
+    (await reader.singletons[`services_${locale}` as "services_no"].read()) ??
+    (locale !== defaultLocale
+      ? await reader.singletons.services_no.read()
+      : null);
   if (!s || !s.items || s.items.length === 0) return servicesDefault;
   return s.items.map((it, i) => ({
     id: `svc-${i}`,
@@ -205,8 +218,14 @@ export async function getServices(): Promise<Service[]> {
 
 export type ProductWithImage = Product & { image: string };
 
-export async function getProducts(): Promise<ProductWithImage[]> {
-  const p = await reader.singletons.products.read();
+export async function getProducts(
+  locale: Locale = defaultLocale,
+): Promise<ProductWithImage[]> {
+  const p =
+    (await reader.singletons[`products_${locale}` as "products_no"].read()) ??
+    (locale !== defaultLocale
+      ? await reader.singletons.products_no.read()
+      : null);
   if (!p || !p.items || p.items.length === 0) {
     return productsDefault.map((pr) => ({
       ...pr,
@@ -225,8 +244,12 @@ export async function getProducts(): Promise<ProductWithImage[]> {
   }));
 }
 
-export async function getOffers(): Promise<Offer[]> {
-  const o = await reader.singletons.offers.read();
+export async function getOffers(locale: Locale = defaultLocale): Promise<Offer[]> {
+  const o =
+    (await reader.singletons[`offers_${locale}` as "offers_no"].read()) ??
+    (locale !== defaultLocale
+      ? await reader.singletons.offers_no.read()
+      : null);
   if (!o) return offersDefault;
   return o.items.map((it, i) => ({
     id: `offer-${i}`,

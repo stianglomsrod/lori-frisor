@@ -1,0 +1,28 @@
+hero:
+  eyebrow: Hairdresser in Halden
+  titleStart: "Well-kept hair,"
+  titleAccent: without the stress
+  lead: >-
+    Lori Frisør is a modern salon in the centre of Halden. We handle cuts,
+    colour and treatments for the whole family, in calm and welcoming
+    surroundings. Book your appointment easily online.
+  bullets:
+    - Easy online booking
+    - Central at Torget 2
+    - Cuts & colour for everyone
+  image: hero-salon.jpg
+  imageAlt: Placeholder – photo from the salon
+about:
+  eyebrow: About us
+  title: A hairdresser you can trust
+  body: >-
+    At Lori Frisør in Halden we take the time to listen. We believe a great cut
+    starts with a good chat. So we get to know your hair and what you have in
+    mind before the scissors come out. The goal is a result that looks just as
+    good at home as in the salon chair.
+  points:
+    - Experienced hairdressers who listen to what you actually want
+    - A calm atmosphere – good for young and old alike
+    - Products and care matched to your hair
+  image: about-salon.jpg
+  imageAlt: Placeholder – photo from the salon

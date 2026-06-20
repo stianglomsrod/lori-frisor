@@ -1,7 +1,11 @@
 ---
 import { getServices, getSettings } from "@lib/content";
+import { resolveLocale } from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
 
-const services = await getServices();
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const services = await getServices(locale);
 const { booking, contact } = await getSettings();
 
 const priced = services.filter((s) => s.priceFrom !== null);
@@ -11,21 +15,18 @@ const onRequest = services.filter((s) => s.priceFrom === null);
 <section class="section section--sand" id="priser" aria-labelledby="priser-tittel">
   <div class="container pricing">
     <div class="section-head reveal">
-      <p class="eyebrow">Priser</p>
-      <h2 id="priser-tittel">Tydelige priser, ingen overraskelser</h2>
-      <p>
-        Prisene under er veiledende «fra»-priser. Endelig pris avhenger av
-        hårlengde, tykkelse og ønsket resultat, og avtales i salongen.
-      </p>
+      <p class="eyebrow">{t.pricing.eyebrow}</p>
+      <h2 id="priser-tittel">{t.pricing.title}</h2>
+      <p>{t.pricing.intro}</p>
     </div>
 
     <div class="pricing__card card reveal">
       <table class="price-table">
-        <caption class="visually-hidden">Veiledende priser per tjeneste</caption>
+        <caption class="visually-hidden">{t.pricing.caption}</caption>
         <thead>
           <tr>
-            <th scope="col">Tjeneste</th>
-            <th scope="col" class="price-table__num">Fra</th>
+            <th scope="col">{t.pricing.colService}</th>
+            <th scope="col" class="price-table__num">{t.pricing.colFrom}</th>
           </tr>
         </thead>
         <tbody>
@@ -33,7 +34,7 @@ const onRequest = services.filter((s) => s.priceFrom === null);
             priced.map((s) => (
               <tr>
                 <th scope="row">{s.title}</th>
-                <td class="price-table__num">{s.priceFrom} kr</td>
+                <td class="price-table__num">{t.pricing.price(s.priceFrom ?? 0)}</td>
               </tr>
             ))
           }
@@ -41,7 +42,7 @@ const onRequest = services.filter((s) => s.priceFrom === null);
             onRequest.map((s) => (
               <tr>
                 <th scope="row">{s.title}</th>
-                <td class="price-table__num price-table__req">Etter konsultasjon</td>
+                <td class="price-table__num price-table__req">{t.pricing.onRequest}</td>
               </tr>
             ))
           }
@@ -49,17 +50,16 @@ const onRequest = services.filter((s) => s.priceFrom === null);
       </table>
 
       <p class="pricing__note">
-        <strong>Usikker på hva du trenger?</strong> Vi hjelper deg gjerne med en
-        uforpliktende vurdering før vi setter i gang. Ring oss på
-        <a href={`tel:${contact.phone}`}>{contact.phoneDisplay}</a> eller
-        <a href="#kontakt">ta kontakt</a>, så finner vi ut av det sammen.
+        <strong>{t.pricing.noteStrong}</strong> {t.pricing.noteBefore}
+        <a href={`tel:${contact.phone}`}>{contact.phoneDisplay}</a> {t.pricing.noteOr}
+        <a href="#kontakt">{t.pricing.noteContact}</a>{t.pricing.noteAfter}
       </p>
       <div class="pricing__actions">
         <a class="btn btn--primary" href={booking.url} target="_blank" rel="noopener">
-          Bestill time
+          {t.cta.book}
         </a>
         <a class="btn btn--secondary" href={`tel:${contact.phone}`}>
-          Ring oss
+          {t.pricing.callUs}
         </a>
       </div>
     </div>

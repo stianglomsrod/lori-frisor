@@ -1,0 +1,69 @@
+---
+import {
+  locales,
+  localeShort,
+  localeLabel,
+  localeHome,
+  resolveLocale,
+} from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
+
+const current = resolveLocale(Astro.currentLocale);
+const t = useTranslations(current);
+---
+
+<div class="lang-toggle" role="group" aria-label={t.langToggle.aria}>
+  {
+    locales.map((loc) =>
+      loc === current ? (
+        <span class="lang-toggle__item is-active" aria-current="true">
+          {localeShort[loc]}
+        </span>
+      ) : (
+        <a
+          class="lang-toggle__item"
+          href={localeHome(loc)}
+          hreflang={loc}
+          lang={loc}
+          aria-label={localeLabel[loc]}
+        >
+          {localeShort[loc]}
+        </a>
+      ),
+    )
+  }
+</div>
+
+<style>
+  .lang-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.2rem;
+    background: var(--color-white);
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+  }
+  .lang-toggle__item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.1rem;
+    min-height: 2.1rem;
+    padding: 0 0.5rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    border-radius: 999px;
+  }
+  .lang-toggle__item:hover {
+    color: var(--color-ink);
+    background: var(--color-sand);
+  }
+  .lang-toggle__item.is-active {
+    color: var(--color-ink);
+    background: var(--color-sand);
+  }
+</style>

@@ -1,0 +1,33 @@
+---
+/**
+ * Forsiden, delt mellom alle språk. Hvilket språk som vises styres av ruten
+ * («/» = norsk, «/en/» = engelsk) via Astro.currentLocale, som komponentene
+ * leser selv. Derfor er denne filen identisk for alle språk.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@components/Header.astro";
+import Hero from "@components/Hero.astro";
+import TrustBar from "@components/TrustBar.astro";
+import Services from "@components/Services.astro";
+import Pricing from "@components/Pricing.astro";
+import Offers from "@components/Offers.astro";
+import Products from "@components/Products.astro";
+import About from "@components/About.astro";
+import Contact from "@components/Contact.astro";
+import Footer from "@components/Footer.astro";
+---
+
+<BaseLayout>
+  <Header />
+  <main id="hovedinnhold">
+    <Hero />
+    <TrustBar />
+    <Services />
+    <Pricing />
+    <Offers />
+    <Products />
+    <About />
+    <Contact />
+  </main>
+  <Footer />
+</BaseLayout>

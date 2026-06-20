@@ -1,9 +1,13 @@
 ---
 import Placeholder from "./Placeholder.astro";
 import { getSettings, getHomepage } from "@lib/content";
+import { resolveLocale } from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
 
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
 const { booking } = await getSettings();
-const { hero } = await getHomepage();
+const { hero } = await getHomepage(locale);
 ---
 
 <section class="hero" aria-labelledby="hero-tittel">
@@ -19,9 +23,9 @@ const { hero } = await getHomepage();
 
       <div class="hero__actions">
         <a class="btn btn--primary" href={booking.url} target="_blank" rel="noopener">
-          {booking.label}
+          {t.cta.book}
         </a>
-        <a class="btn btn--secondary" href="#tjenester">Se tjenester</a>
+        <a class="btn btn--secondary" href="#tjenester">{t.hero.seeServices}</a>
       </div>
 
       <ul class="hero__trust">
@@ -35,7 +39,7 @@ const { hero } = await getHomepage();
         alt={hero.imageAlt}
         variant="salon"
         ratio="4 / 5"
-        label="Plassholder"
+        label={t.common.placeholder}
       />
     </div>
   </div>

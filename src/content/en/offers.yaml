@@ -1,0 +1,12 @@
+items:
+  - badge: New with us
+    title: 20% off your first cut
+    description: >-
+      Is this your first visit? Then you'll get 20% off your first haircut.
+    fineprint: For new clients. Mention when booking. Placeholder offer.
+  - badge: Campaign
+    title: Free hair treatment with colour
+    description: >-
+      Book a colour or highlights and get a nourishing hair treatment included
+      in the service.
+    fineprint: Limited period. Placeholder offer.

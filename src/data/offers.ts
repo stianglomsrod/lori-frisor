@@ -21,7 +21,7 @@ export const offers: Offer[] = [
     title: "20 % på første klipp",
     description:
       "Er det første gang du besøker oss? Da får du 20 % på din første klipp.",
-    fineprint: "Gjelder nye kunder. Oppgi ved booking. Placeholder-tilbud.",
+    fineprint: "Gjelder nye kunder. Oppgi ved bestilling. Placeholder-tilbud.",
   },
   {
     id: "farge-pleie",

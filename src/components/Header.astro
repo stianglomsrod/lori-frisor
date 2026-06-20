@@ -1,43 +1,50 @@
 ---
 import Logo from "./Logo.astro";
-import { navLinks } from "@data/site";
+import LanguageToggle from "./LanguageToggle.astro";
 import { getSettings } from "@lib/content";
+import { resolveLocale } from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
 
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
 const { booking } = await getSettings();
 ---
 
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="site-header__brand" href="#hovedinnhold" aria-label="Lori Frisør – til toppen">
+    <a class="site-header__brand" href="#hovedinnhold" aria-label={t.header.toTop}>
       <Logo />
     </a>
 
-    <nav class="site-nav" aria-label="Hovedmeny">
-      <button
-        class="nav-toggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="hovedmeny"
-      >
-        <span class="nav-toggle__bars" aria-hidden="true"></span>
-        <span class="nav-toggle__label">Meny</span>
-      </button>
+    <div class="site-header__actions">
+      <LanguageToggle />
+      <nav class="site-nav" aria-label={t.header.menuAria}>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="hovedmeny"
+        >
+          <span class="nav-toggle__bars" aria-hidden="true"></span>
+          <span class="nav-toggle__label">{t.header.menu}</span>
+        </button>
 
-      <div class="site-nav__panel" id="hovedmeny" data-nav-panel>
-        <ul class="site-nav__list">
-          {
-            navLinks.map((link) => (
-              <li>
-                <a href={link.href}>{link.label}</a>
-              </li>
-            ))
-          }
-        </ul>
-        <a class="btn btn--primary site-nav__cta" href={booking.url} target="_blank" rel="noopener">
-          {booking.label}
-        </a>
-      </div>
-    </nav>
+        <div class="site-nav__panel" id="hovedmeny" data-nav-panel>
+          <ul class="site-nav__list">
+            {
+              t.nav.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))
+            }
+          </ul>
+          <a class="btn btn--primary site-nav__cta" href={booking.url} target="_blank" rel="noopener">
+            {t.cta.book}
+          </a>
+        </div>
+      </nav>
+    </div>
   </div>
 </header>
 
@@ -60,6 +67,12 @@ const { booking } = await getSettings();
   .site-header__brand {
     text-decoration: none;
     border-radius: 8px;
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
   .nav-toggle {

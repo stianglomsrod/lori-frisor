@@ -1,6 +1,7 @@
 import { config, fields, singleton } from "@keystatic/core";
 import { contentLocales, localeLabel, type Locale } from "./src/i18n/config";
 
+
 /**
  * Keystatic – redigeringsverktøyet for Lori Frisør.
  *
@@ -330,7 +331,7 @@ export default config({
         },
   // TODO (overlevering): opprett team + prosjekt på https://keystatic.cloud,
   // koble til dette GitHub-repoet, og bytt ut verdien under med «team/prosjekt».
-  cloud: { project: "lori-frisor/nettside" },
+  cloud: { project: "lori/lori-frisor" },
   ui: {
     brand: { name: "Lori Frisør" },
     navigation: {

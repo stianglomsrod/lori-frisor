@@ -9,7 +9,7 @@ days:
     hours: 09:00–16:00
     closed: false
   - day: Torsdag
-    hours: 10:00–19:00
+    hours: 09.00-16.00
     closed: false
   - day: Fredag
     hours: 09:00–16:00

@@ -32,8 +32,13 @@ npm run preview
 npm run check    # Astro + TypeScript typecheck — must stay 0/0/0
 ```
 
-Deploy target: **Vercel** (`@astrojs/vercel`). Push to GitHub, import once, then
-content edits auto-rebuild.
+Deploy target: **Vercel** (`@astrojs/vercel`), building from `main`.
+**Prototype (live):** <https://lori-frisor.vercel.app/> — automatically served
+with `X-Robots-Tag: noindex` via a host-conditional rule in
+`scripts/patch-vercel-headers.mjs`. **Production domain** www.lorifrisor.no is
+connected later (launch-day checklist in `HANDOFF.md`); the noindex rule stops
+matching by itself once the real host serves the site. Canonical/sitemap/
+JSON-LD already point at the real domain — nothing to change at launch.
 
 ## Project layout
 

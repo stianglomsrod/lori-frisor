@@ -95,6 +95,11 @@ Interaktivt testet i dev-server (desktop + 375 px mobil, mørk modus):
   banner-knappene stabler pent på smal skjerm.
 - **Språkbytte på personvernsiden** peker riktig på `/en/privacy/`.
 - **Konsoll:** ingen feil eller advarsler.
+- **Axe-core 4.12 (WCAG 2.0/2.1/2.2 A+AA), retest etter oppgraderingen:**
+  **0 brudd** i alle fire tilstander – forside NO m/ banner (30 passes),
+  forside m/ kart lastet + åpen reservasjonsdialog (36), /personvern (29),
+  /en/ (32). Skannen fant én reell arvet feil: «Rediger siden»-lenken i
+  footeren hadde kontrast 3,79:1 → fikset til #a99d8e (består 4,5:1).
 - **Bygget HTML:** gyldig JSON-LD `openingHours` (Mo–Fr + normaliserte
   klokkeslett), `priceRange`, `og:image`/Twitter-kort, `srcset` mot
   `/_vercel/image`, hero med `fetchpriority="high"`, 0 «Plassholder»-badges

@@ -3,6 +3,17 @@
 For neste agent/utvikler. Les `PROJECT_DNA.md` først, så denne.
 Sist oppdatert: 2026-07-04 (branch `feat/proff-oppgradering`).
 
+## Miljøer
+
+- **Prototype (live nå):** <https://lori-frisor.vercel.app/> – Vercel-prosjektet
+  bygger fra `main`. Prototypen får automatisk `X-Robots-Tag: noindex, nofollow`
+  (host-betinget regel i `scripts/patch-vercel-headers.mjs`), så Google
+  indekserer den ikke.
+- **Produksjon (kommer):** <https://www.lorifrisor.no> – domenet pekes når eier
+  er klar. Samme bygg; noindex-regelen slutter å treffe av seg selv når
+  host-en er `(www.)lorifrisor.no`. Canonical/sitemap/JSON-LD peker allerede
+  på det ekte domenet, så det er ingenting å bytte i koden på lanseringsdagen.
+
 ## Kjøre prosjektet
 
 Krever Node 22+ (`.nvmrc` = 22; utviklet på Node 24, Vercel kjører 22).
@@ -74,9 +85,30 @@ Fallback-standarder for utviklere: `src/data/*.ts`. UI-mikrotekst:
 
 ## Anbefalte neste steg (prioritert)
 
-1. Release-gaten (`docs/compliance/release_gate.md`): Brevo-test, region,
-   MFA, fotolisens, axe-retest, eiers pris-/innholdsbekreftelse.
-2. Ekte foto fra salongen (hero, om, produkter) – behold beskrivende alt-tekster.
-3. Merge `feat/proff-oppgradering` → main og deploy; kjør Rich Results-test på
-   forsiden (Google) og del-forhåndsvisning (Facebook Sharing Debugger).
+1. Merge `feat/proff-oppgradering` → main → prototypen oppdateres automatisk.
+2. Release-gaten (`docs/compliance/release_gate.md`): Brevo-oppsett + test,
+   Vercel-region, MFA, fotolisens, eiers pris-/innholdsbekreftelse.
+   (Axe-retest er ✅ utført – 0 brudd.)
+3. Ekte foto fra salongen (hero, om, produkter) – behold beskrivende alt-tekster.
 4. Vurder kundeomtaler/Google-rating som neste tillitslag.
+
+## Lanseringsdag-sjekkliste (møtet med eier)
+
+Estimert 1–2 timer totalt, i denne rekkefølgen:
+
+1. **Innhold med eier:** bekreft priser, åpningstider, tilbud; bytt
+   stockfoto mot egne bilder i Keystatic (skriv alt-tekster); fyll inn
+   Timma-dyplenker per tjeneste (kopiér URL fra bookingflyten).
+2. **Brevo (hvis ikke gjort):** konto + verifisert avsender + `BREVO_API_KEY`
+   i Vercel → send én testreservasjon og se at e-posten lander riktig.
+3. **Vercel:** Functions-region `arn1`; koble domenet `lorifrisor.no` + `www`
+   (DNS hos registraren: A/CNAME etter Vercels anvisning).
+4. **Verifiser etter domene-kobling:**
+   - `curl -I https://www.lorifrisor.no` → **ingen** `X-Robots-Tag` (og
+     `curl -I https://lori-frisor.vercel.app` → fortsatt noindex ✓)
+   - Google Rich Results-test på forsiden (LocalBusiness OK)
+   - Facebook Sharing Debugger (og:image vises)
+   - Send inn sitemap i Google Search Console
+   - Klikk gjennom: samtykke ja/nei, kart, reservasjon, språkbytte, /personvern
+5. **Sign-off:** gå gjennom `docs/compliance/release_gate.md` med eier og
+   signer (inkl. det aksepterte Google Fonts-avviket).

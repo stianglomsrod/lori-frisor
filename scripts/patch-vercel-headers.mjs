@@ -66,6 +66,16 @@ const headerRoutes = [
     headers: { "Content-Security-Policy": csp },
     continue: true,
   },
+  // Prototypen (lori-frisor.vercel.app) skal ikke indekseres av søkemotorer.
+  // Regelen gjelder alle host-er UNNTATT det ekte domenet – den dagen
+  // (www.)lorifrisor.no pekes mot prosjektet, forsvinner noindex av seg selv.
+  {
+    [MARKER]: true,
+    src: "/(.*)",
+    missing: [{ type: "host", value: "(www\\.)?lorifrisor\\.no" }],
+    headers: { "X-Robots-Tag": "noindex, nofollow" },
+    continue: true,
+  },
 ];
 
 config.routes = [...headerRoutes, ...config.routes];

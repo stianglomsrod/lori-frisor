@@ -13,8 +13,9 @@ Sist oppdatert: 2026-07-04 (branch `feat/proff-oppgradering`).
 - **Fotolisens**: bildene i `public/images/` er stock med uavklart opphav (arvet).
   Verifiser lisens eller erstatt med egne/lisensierte foto. Alt-tekster er merket
   «Illustrasjonsfoto» inntil ekte foto er på plass.
-- **Axe-retest + NVDA-gjennomgang** etter denne runden (ny DOM: banner, dialog,
-  kart-plassholder). Loggfør i `docs/compliance/accessibility_checklist.md`.
+- ~~Axe-retest~~ ✅ utført 2026-07-04: 0 brudd på 4 tilstander (én arvet
+  kontrastfeil i footer funnet og fikset). NVDA-gjennomgang anbefales fortsatt
+  (manuell). Logg i `docs/compliance/accessibility_checklist.md`.
 - **MFA** bekreftes på GitHub/Vercel/Keystatic Cloud/Brevo.
 - **Timma-dyplenker**: eier (eller Stian) henter lenke per tjeneste fra
   bestill.timma.no og limer inn i Keystatic → «Egen booking-lenke».

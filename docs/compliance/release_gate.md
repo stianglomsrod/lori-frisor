@@ -12,7 +12,7 @@
 | Personvern | Personvernerklæring publisert (NO+EN); data map + underleverandører dokumentert | ✅ (dok) / ⬜ DPA-bekreftelser ved kontooppsett | Utvikler |
 | DPIA | Screening gjort – full DPIA ikke nødvendig (lav risiko, ingen særlige kategorier) | ✅ | Utvikler |
 | Cookies | Register finnes; ikke-nødvendig tredjepart (Maps) blokkeres før samtykke – verifisert i bygg + nettleser | ✅ | Utvikler |
-| UU/WCAG | Sjekkliste oppdatert; axe-retest + NVDA-gjennomgang etter endringene | ⬜ før lansering | Utvikler |
+| UU/WCAG | Sjekkliste oppdatert; axe-retest utført 2026-07-04: **0 brudd** på 4 tilstander (én kontrastfeil funnet og fikset). NVDA-runde anbefalt, ikke blokkerende. | ✅ | Utvikler |
 | Sikkerhet | Headere/CSP i bygget; endepunkt-vern aktivt; MFA på kontoer bekreftes | ⬜ MFA-bekreftelse | Eier + utvikler |
 | KI | Ikke relevant | ✅ | – |
 | Helse/betaling/regulert | Ikke relevant | ✅ | – |

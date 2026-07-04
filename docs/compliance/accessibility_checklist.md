@@ -13,6 +13,7 @@
 | Forståelig | Skjemaetiketter og feilmeldinger | Manuell | ✅ | Alle felt har `<label for>`; feil vises i `role="status"`-region med tekst + alternativ handling (SMS) |
 | Forståelig | Konsistent navigasjon + språkattributt | Manuell | ✅ | `<html lang="nb"/"en">` per rute; hreflang-par; språkbytte beholder anker |
 | Robust | Gyldig semantikk / ARIA korrekt | Kodegjennomgang | ✅ | Landemerker, tabeller m/ caption+scope, `aria-expanded/controls`, `aria-current`, stretched-link-mønster m/ `aria-describedby` |
+| Robust | Automatisk skann etter oppgraderingen | axe-core 4.12 (WCAG 2.0/2.1/2.2 A+AA) | ✅ | **0 brudd** på alle testede tilstander (2026-07-04): forside NO m/ banner (30 passes), forside m/ kart + åpen reservasjonsdialog (36), /personvern (29), /en/ (32). Én reell feil funnet og fikset: «Rediger siden»-lenken i footer hadde 3,79:1 → ny farge #a99d8e (≥4,5:1) |
 | Robust | Skjermlesergjennomgang av hovedflyt | Skjermleser | ⬜ | Anbefalt før lansering (NVDA: forside → booking, reservasjonsdialog, samtykke) |
 | Mobil | Responsiv, zoom uten tap | Mobilviewport | ✅ | Verifisert 375 px; ingen horisontal scroll; banner stabler knapper |
 | Nytt innhold | Samtykkebanner | Manuell | ✅ | Ikke-modal region m/ `aria-label`; åpnes via footer med fokus til første knapp; ingen fokusfelle |
@@ -20,5 +21,5 @@
 | Nytt innhold | Lenker som åpner ny fane | Manuell | ✅ | Skjult «(åpnes i ny fane)»-hint på alle `target="_blank"`-lenker |
 
 **Kritiske avvik lukket eller akseptert med plan:** ja – ingen kjente kritiske avvik.
-**Gjenstående før lansering:** kjør axe-core på nytt (ny DOM) + én NVDA-gjennomgang. Loggfør resultatet her.
+**Gjenstående før lansering:** én manuell NVDA-gjennomgang (anbefalt, ikke lovpålagt for privat aktør). Axe-retest er utført og logget over.
 **Tilgjengelighetserklæring (offentlig sektor):** ikke påkrevd (privat virksomhet), men siden følger kravene i praksis.

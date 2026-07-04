@@ -19,7 +19,53 @@ export interface UIStrings {
   seo: { tagline: string; description: string };
   /** Felles knapper/etiketter. */
   cta: { book: string };
-  common: { placeholder: string };
+  common: {
+    placeholder: string;
+    /** Skjult hint for lenker som åpner i ny fane (skjermlesere). */
+    newTab: string;
+  };
+  /** Samtykkebanner (informasjonskapsler / tredjepartsinnhold). */
+  consent: {
+    heading: string;
+    body: string;
+    acceptAll: string;
+    essentialOnly: string;
+    readMore: string;
+    /** Lenketekst i footer for å endre valget senere. */
+    manage: string;
+  };
+  /** Kart-plassholder (Google Maps lastes først etter samtykke). */
+  map: {
+    load: string;
+    notice: string;
+    noscript: string;
+  };
+  /** Personvernside. */
+  privacy: { footerLink: string; title: string };
+  /** Produktreservasjon (skjema-dialog). */
+  reserve: {
+    dialogTitle: string;
+    productLabel: string;
+    name: string;
+    phone: string;
+    email: string;
+    optional: string;
+    when: string;
+    whenAsap: string;
+    message: string;
+    submit: string;
+    cancel: string;
+    close: string;
+    sending: string;
+    successTitle: string;
+    successBody: string;
+    errorTitle: string;
+    errorBody: string;
+    errorSmsLink: string;
+    privacyNote: string;
+  };
+  /** 404-side. */
+  notFound: { title: string; lead: string; backHome: string };
   /** Hovedmeny og bunnmeny (samme ankerlenker på alle språk). */
   nav: NavLink[];
   header: { menu: string; menuAria: string; toTop: string };
@@ -95,6 +141,8 @@ export interface UIStrings {
   };
   /** Visningsnavn for dager (oversetter de norske dagverdiene i innholdet). */
   days: Record<string, string>;
+  /** Korte dagnavn til kompakte etiketter (f.eks. «Man–fre»). */
+  daysShort: Record<string, string>;
   closed: string;
 }
 
@@ -108,7 +156,53 @@ export const ui: Record<Locale, UIStrings> = {
         "Lori Frisør er en moderne frisørsalong i Halden. Klipp, farge, balayage og behandlinger for hele familien. Bestill time enkelt på nett.",
     },
     cta: { book: "Bestill time" },
-    common: { placeholder: "Plassholder" },
+    common: {
+      placeholder: "Plassholder",
+      newTab: "(åpnes i ny fane)",
+    },
+    consent: {
+      heading: "Informasjonskapsler",
+      body: "Vi bruker bare det som er nødvendig for at siden skal fungere. Sier du ja til alt, laster vi også kartet fra Google Maps – da kan Google sette egne informasjonskapsler.",
+      acceptAll: "Godta alle",
+      essentialOnly: "Kun nødvendige",
+      readMore: "Les mer i personvernerklæringen",
+      manage: "Administrer informasjonskapsler",
+    },
+    map: {
+      load: "Vis kart",
+      notice:
+        "Kartet hentes fra Google Maps. Viser du kartet, kan Google sette informasjonskapsler.",
+      noscript: "Åpne kartet i Google Maps",
+    },
+    privacy: { footerLink: "Personvern", title: "Personvernerklæring" },
+    reserve: {
+      dialogTitle: "Reserver for henting",
+      productLabel: "Produkt",
+      name: "Navn",
+      phone: "Telefon",
+      email: "E-post",
+      optional: "valgfritt",
+      when: "Når vil du hente?",
+      whenAsap: "Så snart som mulig",
+      message: "Melding",
+      submit: "Send reservasjon",
+      cancel: "Avbryt",
+      close: "Lukk",
+      sending: "Sender …",
+      successTitle: "Takk! Reservasjonen er sendt.",
+      successBody:
+        "Vi legger varen klar og tar kontakt hvis noe er uklart. Du betaler i salongen når du henter.",
+      errorTitle: "Noe gikk galt.",
+      errorBody: "Reservasjonen ble ikke sendt. Prøv igjen, eller",
+      errorSmsLink: "send oss en SMS i stedet",
+      privacyNote:
+        "Vi bruker opplysningene kun til å legge klar varen og kontakte deg om reservasjonen. Se personvernerklæringen.",
+    },
+    notFound: {
+      title: "Fant ikke siden",
+      lead: "Siden du lette etter finnes ikke, eller kan ha blitt flyttet.",
+      backHome: "Til forsiden",
+    },
     nav: ["Tjenester", "Priser", "Tilbud", "Produkter", "Kontakt"].map(
       (label, i) => ({ href: navHrefs[i], label }),
     ),
@@ -207,6 +301,15 @@ export const ui: Record<Locale, UIStrings> = {
       Lørdag: "Lørdag",
       Søndag: "Søndag",
     },
+    daysShort: {
+      Mandag: "man",
+      Tirsdag: "tir",
+      Onsdag: "ons",
+      Torsdag: "tor",
+      Fredag: "fre",
+      Lørdag: "lør",
+      Søndag: "søn",
+    },
     closed: "Stengt",
   },
 
@@ -217,7 +320,53 @@ export const ui: Record<Locale, UIStrings> = {
         "Lori Frisør is a modern hair salon in Halden, Norway. Cuts, colour, balayage and treatments for the whole family. Book your appointment easily online.",
     },
     cta: { book: "Book appointment" },
-    common: { placeholder: "Placeholder" },
+    common: {
+      placeholder: "Placeholder",
+      newTab: "(opens in a new tab)",
+    },
+    consent: {
+      heading: "Cookies",
+      body: "We only use what is necessary for the site to work. If you accept all, we also load the map from Google Maps – Google may then set its own cookies.",
+      acceptAll: "Accept all",
+      essentialOnly: "Necessary only",
+      readMore: "Read more in our privacy policy",
+      manage: "Manage cookies",
+    },
+    map: {
+      load: "Show map",
+      notice:
+        "The map is loaded from Google Maps. If you show the map, Google may set cookies.",
+      noscript: "Open the map in Google Maps",
+    },
+    privacy: { footerLink: "Privacy", title: "Privacy policy" },
+    reserve: {
+      dialogTitle: "Reserve for pickup",
+      productLabel: "Product",
+      name: "Name",
+      phone: "Phone",
+      email: "Email",
+      optional: "optional",
+      when: "When would you like to pick it up?",
+      whenAsap: "As soon as possible",
+      message: "Message",
+      submit: "Send reservation",
+      cancel: "Cancel",
+      close: "Close",
+      sending: "Sending …",
+      successTitle: "Thank you! Your reservation has been sent.",
+      successBody:
+        "We'll set the product aside and get in touch if anything is unclear. You pay in the salon when you pick it up.",
+      errorTitle: "Something went wrong.",
+      errorBody: "The reservation was not sent. Please try again, or",
+      errorSmsLink: "send us a text message instead",
+      privacyNote:
+        "We only use these details to set the product aside and contact you about the reservation. See our privacy policy.",
+    },
+    notFound: {
+      title: "Page not found",
+      lead: "The page you were looking for doesn't exist or may have been moved.",
+      backHome: "Back to the front page",
+    },
     nav: ["Services", "Prices", "Offers", "Products", "Contact"].map(
       (label, i) => ({ href: navHrefs[i], label }),
     ),
@@ -313,6 +462,15 @@ export const ui: Record<Locale, UIStrings> = {
       Fredag: "Friday",
       Lørdag: "Saturday",
       Søndag: "Sunday",
+    },
+    daysShort: {
+      Mandag: "Mon",
+      Tirsdag: "Tue",
+      Onsdag: "Wed",
+      Torsdag: "Thu",
+      Fredag: "Fri",
+      Lørdag: "Sat",
+      Søndag: "Sun",
     },
     closed: "Closed",
   },

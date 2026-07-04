@@ -1,4 +1,5 @@
 ---
+import NewTab from "./NewTab.astro";
 import { getServices, getSettings } from "@lib/content";
 import { resolveLocale } from "@i18n/config";
 import { useTranslations } from "@i18n/ui";
@@ -10,6 +11,11 @@ const { booking } = await getSettings();
 
 const formatPrice = (n: number | null) =>
   n === null ? t.services.onRequest : t.services.priceFrom(n);
+
+// Dyplenke til akkurat denne tjenesten i Timma når den er satt i Keystatic;
+// ellers felles booking-lenke.
+const bookingHref = (svc: (typeof services)[number]) =>
+  svc.bookingUrl || booking.url;
 ---
 
 <section class="section" id="tjenester" aria-labelledby="tjenester-tittel">
@@ -29,12 +35,12 @@ const formatPrice = (n: number | null) =>
               <h3 class="service-card__title">
                 <a
                   class="service-card__link"
-                  href={booking.url}
+                  href={bookingHref(service)}
                   target="_blank"
                   rel="noopener"
                   aria-describedby={`svc-cta-${service.id}`}
                 >
-                  {service.title}
+                  {service.title}<NewTab />
                 </a>
               </h3>
               <p>{service.description}</p>

@@ -112,6 +112,12 @@ const servicesSchema = (categories: { label: string; value: string }[]) => ({
         options: categories,
         defaultValue: categories[0].value,
       }),
+      bookingUrl: fields.url({
+        label: "Egen booking-lenke (valgfritt)",
+        description:
+          "Lim inn Timma-lenken for akkurat denne tjenesten (velg tjenesten på bestill.timma.no og kopier adressen fra adressefeltet). Tom = vanlig booking-lenke.",
+        validation: { isRequired: false },
+      }),
     }),
     {
       label: "Tjenester",
@@ -180,7 +186,7 @@ const offersSchema = () => ({
 
 const settings = singleton({
   label: "Salong & kontakt",
-  path: "src/content/settings",
+  path: "src/cms/settings",
   format: { data: "yaml" },
   schema: {
     name: fields.text({
@@ -215,12 +221,33 @@ const settings = singleton({
       },
       { label: "Kontaktinformasjon" },
     ),
-    social: fields.object(
+    social: fields.array(
+      fields.object({
+        platform: fields.select({
+          label: "Plattform",
+          options: [
+            { label: "Facebook", value: "facebook" },
+            { label: "Instagram", value: "instagram" },
+            { label: "TikTok", value: "tiktok" },
+            { label: "Snapchat", value: "snapchat" },
+            { label: "YouTube", value: "youtube" },
+            { label: "Annet", value: "other" },
+          ],
+          defaultValue: "instagram",
+        }),
+        label: fields.text({
+          label: "Egen etikett (valgfritt)",
+          description: "Tom = plattformnavnet, f.eks. «Instagram».",
+          validation: { isRequired: false },
+        }),
+        url: fields.url({ label: "Lenke" }),
+      }),
       {
-        facebook: fields.url({ label: "Facebook-lenke" }),
-        instagram: fields.url({ label: "Instagram-lenke" }),
+        label: "Sosiale medier",
+        description: "Legg til så mange du vil – f.eks. TikTok i tillegg.",
+        itemLabel: (props) =>
+          props.fields.label.value || props.fields.platform.value,
       },
-      { label: "Sosiale medier" },
     ),
     booking: fields.object(
       {
@@ -232,17 +259,45 @@ const settings = singleton({
       },
       { label: "Booking" },
     ),
+    cancellation: fields.object(
+      {
+        no: fields.text({
+          label: "Avbestillingsregel (norsk)",
+          multiline: true,
+          defaultValue: "Avbestilling må skje senest 24 timer før timen.",
+        }),
+        en: fields.text({
+          label: "Avbestillingsregel (engelsk)",
+          multiline: true,
+          defaultValue:
+            "Cancellations must be made at least 24 hours before the appointment.",
+        }),
+      },
+      { label: "Avbestillingsregel" },
+    ),
   },
 });
 
 const openingHours = singleton({
   label: "Åpningstider",
-  path: "src/content/opening-hours",
+  path: "src/cms/opening-hours",
   format: { data: "yaml" },
   schema: {
     days: fields.array(
       fields.object({
-        day: fields.text({ label: "Dag" }),
+        day: fields.select({
+          label: "Dag",
+          options: [
+            "Mandag",
+            "Tirsdag",
+            "Onsdag",
+            "Torsdag",
+            "Fredag",
+            "Lørdag",
+            "Søndag",
+          ].map((d) => ({ label: d, value: d })),
+          defaultValue: "Mandag",
+        }),
         hours: fields.text({
           label: "Tider",
           description: "F.eks. «09:00–17:00» eller «Stengt».",
@@ -266,50 +321,50 @@ const openingHours = singleton({
 
 const homepage_no = singleton({
   label: `Forside (${localeLabel.no})`,
-  path: "src/content/no/homepage",
+  path: "src/cms/no/homepage",
   format: { data: "yaml" },
   schema: homepageSchema(),
 });
 const services_no = singleton({
   label: `Tjenester & priser (${localeLabel.no})`,
-  path: "src/content/no/services",
+  path: "src/cms/no/services",
   format: { data: "yaml" },
   schema: servicesSchema(serviceCategories.no),
 });
 const products_no = singleton({
   label: `Produkter (${localeLabel.no})`,
-  path: "src/content/no/products",
+  path: "src/cms/no/products",
   format: { data: "yaml" },
   schema: productsSchema(productCategories.no),
 });
 const offers_no = singleton({
   label: `Tilbud (${localeLabel.no})`,
-  path: "src/content/no/offers",
+  path: "src/cms/no/offers",
   format: { data: "yaml" },
   schema: offersSchema(),
 });
 
 const homepage_en = singleton({
   label: `Forside (${localeLabel.en})`,
-  path: "src/content/en/homepage",
+  path: "src/cms/en/homepage",
   format: { data: "yaml" },
   schema: homepageSchema(),
 });
 const services_en = singleton({
   label: `Tjenester & priser (${localeLabel.en})`,
-  path: "src/content/en/services",
+  path: "src/cms/en/services",
   format: { data: "yaml" },
   schema: servicesSchema(serviceCategories.en),
 });
 const products_en = singleton({
   label: `Produkter (${localeLabel.en})`,
-  path: "src/content/en/products",
+  path: "src/cms/en/products",
   format: { data: "yaml" },
   schema: productsSchema(productCategories.en),
 });
 const offers_en = singleton({
   label: `Tilbud (${localeLabel.en})`,
-  path: "src/content/en/offers",
+  path: "src/cms/en/offers",
   format: { data: "yaml" },
   schema: offersSchema(),
 });

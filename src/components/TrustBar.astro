@@ -1,16 +1,37 @@
 ---
-import { getSettings } from "@lib/content";
+import { getSettings, getOpeningHours } from "@lib/content";
 import { resolveLocale } from "@i18n/config";
 import { useTranslations } from "@i18n/ui";
 
 const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
 const { contact } = await getSettings();
+const openingHours = await getOpeningHours();
+
+// Utled «Man–fre»-etiketten fra de faktiske åpningstidene (Keystatic), slik at
+// stripa aldri motsier kontaktseksjonen. Sammenhengende dager → «Man–fre»,
+// ellers listes åpne dager. Fallback: fast tekst fra ordboken.
+const short = (day: string) => t.daysShort[day] ?? day.slice(0, 3).toLowerCase();
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const openIdx = openingHours
+  .map((d, i) => ({ ...d, i }))
+  .filter((d) => !d.closed);
+let hoursValue = t.trust.hoursValue;
+if (openIdx.length === 1) {
+  hoursValue = cap(short(openIdx[0].day));
+} else if (openIdx.length > 1) {
+  const contiguous = openIdx.every(
+    (d, n) => n === 0 || d.i === openIdx[n - 1].i + 1,
+  );
+  hoursValue = contiguous
+    ? `${cap(short(openIdx[0].day))}–${short(openIdx[openIdx.length - 1].day)}`
+    : openIdx.map((d) => cap(short(d.day))).join(", ");
+}
 
 const items = [
   { label: t.trust.address, value: `${contact.addressStreet}, ${contact.addressCity}`, href: contact.mapsUrl, icon: "pin" },
   { label: t.trust.callUs, value: contact.phoneDisplay, href: `tel:${contact.phone}`, icon: "phone" },
-  { label: t.trust.hours, value: t.trust.hoursValue, href: "#kontakt", icon: "clock" },
+  { label: t.trust.hours, value: hoursValue, href: "#kontakt", icon: "clock" },
 ];
 ---
 

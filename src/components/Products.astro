@@ -1,18 +1,30 @@
 ---
 import Placeholder from "./Placeholder.astro";
-import { getProducts, getSettings } from "@lib/content";
-import { resolveLocale } from "@i18n/config";
+import { getProducts, getSettings, getOpeningHours } from "@lib/content";
+import { resolveLocale, localePrivacy } from "@i18n/config";
 import { useTranslations } from "@i18n/ui";
 
 const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
 const products = await getProducts(locale);
 const { contact } = await getSettings();
+const openingHours = await getOpeningHours();
 
 // Lett variant av click-and-collect: kunden reserverer og henter i salong.
-// Forhåndsutfylt SMS/telefon – ingen nettbetaling i denne fasen.
+// To nivåer, ingen database og ingen nettbetaling:
+//  1) Uten e-postoppsett (BREVO_API_KEY mangler): «Reserver» er en
+//     forhåndsutfylt SMS-lenke – dagens robuste standard.
+//  2) Med e-postoppsett: et lite skjema (dialog) sender reservasjonen som
+//     e-post til salongen via /api/reserve. SMS forblir reserveløsning hvis
+//     sendingen feiler eller JavaScript er av.
 const reserveHref = (name: string) =>
   `sms:${contact.phone}?body=${encodeURIComponent(t.products.smsBody(name))}`;
+
+const formEnabled = Boolean(
+  import.meta.env.BREVO_API_KEY || import.meta.env.RESERVE_FORM_PREVIEW,
+);
+const pickupDays = openingHours.filter((d) => !d.closed).map((d) => d.day);
+const privacyHref = localePrivacy[locale];
 ---
 
 <section class="section section--sand" id="produkter" aria-labelledby="produkter-tittel">
@@ -29,11 +41,12 @@ const reserveHref = (name: string) =>
           <li class="product-card card">
             <div class="product-card__media">
               <Placeholder
-                src={product.image}
+                src={product.image || undefined}
                 variant="product"
                 ratio="1 / 1"
                 fit="cover"
                 label={t.common.placeholder}
+                sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 92vw"
               />
               {product.featured && (
                 <span class="product-card__badge">{t.products.recommended}</span>
@@ -46,7 +59,11 @@ const reserveHref = (name: string) =>
               <p class="product-card__desc">{product.description}</p>
               <div class="product-card__foot">
                 <span class="product-card__price">{t.products.price(product.price)}</span>
-                <a class="btn btn--ghost product-card__reserve" href={reserveHref(product.name)}>
+                <a
+                  class="btn btn--ghost product-card__reserve"
+                  href={reserveHref(product.name)}
+                  data-reserve={formEnabled ? product.name : undefined}
+                >
                   {t.products.reserve}
                   <span class="visually-hidden">{t.products.reserveHidden(product.name)}</span>
                 </a>
@@ -61,6 +78,131 @@ const reserveHref = (name: string) =>
       {t.products.noteBefore}
       <a href={`tel:${contact.phone}`}>{contact.phoneDisplay}</a>{t.products.noteAfter}
     </p>
+
+    {
+      formEnabled && (
+        <dialog class="reserve" id="reserve-dialog" aria-labelledby="reserve-tittel">
+          <div class="reserve__inner" data-reserve-body>
+            <div class="reserve__head">
+              <h3 id="reserve-tittel">{t.reserve.dialogTitle}</h3>
+              <button
+                type="button"
+                class="reserve__close"
+                data-reserve-close
+                aria-label={t.reserve.close}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <p class="reserve__product">
+              {t.reserve.productLabel}: <strong data-reserve-product-name />
+            </p>
+            <form class="reserve__form" data-reserve-form>
+              <input type="hidden" name="product" data-reserve-product-input />
+              <div class="reserve__field">
+                <label for="res-navn">{t.reserve.name}</label>
+                <input
+                  id="res-navn"
+                  name="name"
+                  type="text"
+                  required
+                  autocomplete="name"
+                  maxlength="80"
+                />
+              </div>
+              <div class="reserve__field">
+                <label for="res-tlf">{t.reserve.phone}</label>
+                <input
+                  id="res-tlf"
+                  name="phone"
+                  type="tel"
+                  required
+                  autocomplete="tel"
+                  maxlength="20"
+                />
+              </div>
+              <div class="reserve__field">
+                <label for="res-epost">
+                  {t.reserve.email} <span class="reserve__opt">({t.reserve.optional})</span>
+                </label>
+                <input
+                  id="res-epost"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  maxlength="120"
+                />
+              </div>
+              <div class="reserve__field">
+                <label for="res-naar">{t.reserve.when}</label>
+                <select id="res-naar" name="when">
+                  <option value="">{t.reserve.whenAsap}</option>
+                  {pickupDays.map((day) => (
+                    <option value={t.days[day] ?? day}>{t.days[day] ?? day}</option>
+                  ))}
+                </select>
+              </div>
+              <div class="reserve__field">
+                <label for="res-melding">
+                  {t.reserve.message} <span class="reserve__opt">({t.reserve.optional})</span>
+                </label>
+                <textarea id="res-melding" name="message" rows="3" maxlength="500" />
+              </div>
+              <div class="reserve__hp" aria-hidden="true">
+                <label for="res-web">Nettside</label>
+                <input
+                  id="res-web"
+                  name="website"
+                  type="text"
+                  tabindex="-1"
+                  autocomplete="off"
+                />
+              </div>
+              <p class="reserve__privacy">
+                {t.reserve.privacyNote}{" "}
+                <a href={privacyHref}>{t.privacy.footerLink}</a>
+              </p>
+              <p
+                class="reserve__status"
+                role="status"
+                data-reserve-status
+                data-sending={t.reserve.sending}
+                data-error-title={t.reserve.errorTitle}
+                data-error-body={t.reserve.errorBody}
+                data-error-sms={t.reserve.errorSmsLink}
+              />
+              <div class="reserve__actions">
+                <button class="btn btn--primary" type="submit" data-reserve-submit>
+                  {t.reserve.submit}
+                </button>
+                <button class="btn btn--ghost" type="button" data-reserve-close>
+                  {t.reserve.cancel}
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="reserve__inner reserve__success" data-reserve-success hidden>
+            <div class="reserve__head">
+              <h3>{t.reserve.successTitle}</h3>
+              <button
+                type="button"
+                class="reserve__close"
+                data-reserve-close
+                aria-label={t.reserve.close}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <p>{t.reserve.successBody}</p>
+            <div class="reserve__actions">
+              <button class="btn btn--primary" type="button" data-reserve-close>
+                {t.reserve.close}
+              </button>
+            </div>
+          </div>
+        </dialog>
+      )
+    }
   </div>
 </section>
 
@@ -168,6 +310,118 @@ const reserveHref = (name: string) =>
     color: var(--color-ink-soft);
   }
 
+  /* --- Reservasjonsdialog ------------------------------------------------ */
+  .reserve {
+    width: min(92vw, 27rem);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    background: var(--color-white);
+    color: var(--color-ink);
+    padding: 0;
+    box-shadow: var(--shadow-md);
+  }
+  .reserve::backdrop {
+    background: rgba(38, 33, 28, 0.55);
+  }
+  .reserve__inner {
+    padding: 1.5rem;
+  }
+  .reserve__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .reserve__head h3 {
+    margin: 0;
+  }
+  .reserve__close {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: none;
+    background: var(--color-cream);
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+  .reserve__close svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .reserve__product {
+    margin: 0 0 1rem;
+    color: var(--color-ink-soft);
+    font-size: 0.95rem;
+  }
+  .reserve__form {
+    display: grid;
+    gap: 0.85rem;
+  }
+  .reserve__field {
+    display: grid;
+    gap: 0.3rem;
+  }
+  .reserve__field label {
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+  .reserve__opt {
+    font-weight: 400;
+    color: var(--color-ink-soft);
+  }
+  .reserve__field input,
+  .reserve__field select,
+  .reserve__field textarea {
+    font: inherit;
+    color: inherit;
+    background: var(--color-cream);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.75rem;
+    width: 100%;
+  }
+  .reserve__field textarea {
+    resize: vertical;
+  }
+  /* Honningkrukke: usynlig for mennesker, fristende for roboter. */
+  .reserve__hp {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .reserve__privacy {
+    font-size: 0.82rem;
+    color: var(--color-ink-soft);
+    margin: 0;
+  }
+  .reserve__privacy a {
+    color: var(--color-accent-dark);
+  }
+  .reserve__status {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    min-height: 1.2em;
+  }
+  .reserve__status a {
+    color: var(--color-accent-dark);
+  }
+  .reserve__status.is-error {
+    color: #8a2f22;
+  }
+  .reserve__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.25rem;
+  }
+
   @media (min-width: 40rem) {
     .product-grid {
       grid-template-columns: repeat(2, 1fr);
@@ -179,3 +433,96 @@ const reserveHref = (name: string) =>
     }
   }
 </style>
+
+<script>
+  // Progressiv forbedring: uten JavaScript (eller uten e-postoppsett) er
+  // «Reserver» en vanlig SMS-lenke. Med JavaScript åpner vi skjemaet og
+  // faller tilbake til SMS-lenken hvis innsendingen feiler.
+  const dialog = document.querySelector<HTMLDialogElement>("#reserve-dialog");
+
+  if (dialog && typeof dialog.showModal === "function") {
+    const body = dialog.querySelector<HTMLElement>("[data-reserve-body]");
+    const success = dialog.querySelector<HTMLElement>("[data-reserve-success]");
+    const form = dialog.querySelector<HTMLFormElement>("[data-reserve-form]");
+    const nameEl = dialog.querySelector<HTMLElement>("[data-reserve-product-name]");
+    const productInput = dialog.querySelector<HTMLInputElement>(
+      "[data-reserve-product-input]",
+    );
+    const status = dialog.querySelector<HTMLElement>("[data-reserve-status]");
+    const submitBtn = dialog.querySelector<HTMLButtonElement>(
+      "[data-reserve-submit]",
+    );
+    let smsFallback = "";
+
+    const resetViews = () => {
+      if (body) body.hidden = false;
+      if (success) success.hidden = true;
+      if (status) {
+        status.textContent = "";
+        status.classList.remove("is-error");
+      }
+      if (submitBtn) submitBtn.disabled = false;
+    };
+
+    document
+      .querySelectorAll<HTMLAnchorElement>("[data-reserve]")
+      .forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const product = link.dataset.reserve ?? "";
+          smsFallback = link.href;
+          if (nameEl) nameEl.textContent = product;
+          if (productInput) productInput.value = product;
+          form?.reset();
+          resetViews();
+          dialog.showModal();
+          dialog.querySelector<HTMLInputElement>("#res-navn")?.focus();
+        });
+      });
+
+    dialog.querySelectorAll("[data-reserve-close]").forEach((btn) =>
+      btn.addEventListener("click", () => dialog.close()),
+    );
+    // Klikk på selve bakteppet lukker (klikk inni treffer .reserve__inner).
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      const data = Object.fromEntries(new FormData(form).entries());
+      if (submitBtn) submitBtn.disabled = true;
+      if (status) {
+        status.classList.remove("is-error");
+        status.textContent = status.dataset.sending ?? "…";
+      }
+      try {
+        const res = await fetch("/api/reserve", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        if (body) body.hidden = true;
+        if (success) {
+          success.hidden = false;
+          success.querySelector<HTMLButtonElement>("[data-reserve-close]")?.focus();
+        }
+      } catch {
+        if (status) {
+          status.classList.add("is-error");
+          status.innerHTML = "";
+          status.append(
+            document.createTextNode(`${status.dataset.errorTitle ?? ""} ${status.dataset.errorBody ?? ""} `),
+          );
+          const a = document.createElement("a");
+          a.href = smsFallback;
+          a.textContent = status.dataset.errorSms ?? "SMS";
+          status.append(a, document.createTextNode("."));
+        }
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  }
+</script>

@@ -1,19 +1,28 @@
 ---
 /**
  * Bildevisning med rolig merkevareramme.
- * - Uten `src`: dekorativ SVG-gradient (ren plassholder).
- * - Med `src`: viser et faktisk bilde.
+ * - Uten `src`: dekorativ SVG-gradient (ren plassholder) + «Plassholder»-merke.
+ * - Med `src`: viser et faktisk bilde – uten merke. (Merket skal aldri ligge
+ *   over ekte/opplastede bilder; stock-bilder merkes i stedet ærlig i alt-tekst
+ *   med «Illustrasjonsfoto: …».)
  *   `fit="natural"` (default): rammen følger bildets EGNE proporsjoner (lest ved
  *     bygg) – brukes for enkeltbilder (hero/om), ingen beskæring, ingen tomrom.
  *   `fit="cover"`: rammen bruker et FAST forhold (`ratio`) og bildet beskjæres
  *     (object-fit: cover). Brukes i kort-rutenett (produkter) slik at alle kort
  *     ligger likt uansett hvilket bilde eieren laster opp – waterproof handover.
- * `label`  : tekst i merkelappen (default «Plassholder» når bilde er satt)
- * `variant`: motiv/farger for SVG-fallback
- * `ratio`  : aspekt for rammen (alltid brukt i `cover`, ellers fallback)
- * `src`    : bildekilde (valgfri, public-sti som "/images/..." )
- * `alt`    : alternativ tekst (tom = dekorativt)
- * `fit`    : "natural" (følg bildet) | "cover" (fast ramme + beskæring)
+ * På Vercel genereres responsiv `srcset` via Vercels bildeoptimalisering
+ * (/_vercel/image), slik at eier-opplastede mobilfoto aldri serveres i full
+ * størrelse. Lokalt (dev/preview) brukes originalfilen direkte.
+ *
+ * `label`        : tekst i merkelappen på SVG-plassholderen
+ * `variant`      : motiv/farger for SVG-fallback
+ * `ratio`        : aspekt for rammen (alltid brukt i `cover`, ellers fallback)
+ * `src`          : bildekilde (valgfri, public-sti som "/images/...")
+ * `alt`          : alternativ tekst (tom = dekorativt)
+ * `fit`          : "natural" (følg bildet) | "cover" (fast ramme + beskæring)
+ * `loading`      : "lazy" (default) | "eager" – hero/LCP skal være eager
+ * `fetchpriority`: sett "high" på LCP-bildet
+ * `sizes`        : sizes-attributt når srcset er aktiv
  */
 import path from "node:path";
 import sharp from "sharp";
@@ -25,6 +34,9 @@ interface Props {
   src?: string;
   alt?: string;
   fit?: "natural" | "cover";
+  loading?: "lazy" | "eager";
+  fetchpriority?: "high" | "low" | "auto";
+  sizes?: string;
 }
 const {
   label,
@@ -33,6 +45,9 @@ const {
   src,
   alt = "",
   fit = "natural",
+  loading = "lazy",
+  fetchpriority,
+  sizes,
 } = Astro.props;
 
 // Les bildets faktiske dimensjoner ved bygg. I "natural" lar vi rammen følge
@@ -57,6 +72,23 @@ if (src && src.startsWith("/")) {
   }
 }
 
+// Responsiv srcset via Vercels bildeoptimalisering – kun ved bygg på Vercel.
+// Breddene MÅ finnes i `imagesConfig.sizes` i astro.config.mjs.
+const OPT_WIDTHS = [480, 800, 1200, 1600];
+const onVercel = Boolean(process.env.VERCEL);
+const optimizedUrl = (w: number) =>
+  `/_vercel/image?url=${encodeURIComponent(src ?? "")}&w=${w}&q=75`;
+
+let effectiveSrc = src;
+let srcset: string | undefined;
+if (src && src.startsWith("/") && onVercel && imgWidth) {
+  const widths = OPT_WIDTHS.filter((w) => w <= (imgWidth as number));
+  if (widths.length === 0) widths.push(OPT_WIDTHS[0]);
+  srcset = widths.map((w) => `${optimizedUrl(w)} ${w}w`).join(", ");
+  effectiveSrc = optimizedUrl(widths[widths.length - 1]);
+}
+const defaultSizes = "(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 92vw";
+
 const palettes: Record<string, [string, string]> = {
   hair: ["#e9d8c4", "#c9a888"],
   color: ["#e7c9bd", "#b07a68"],
@@ -65,8 +97,12 @@ const palettes: Record<string, [string, string]> = {
   salon: ["#e3d3c2", "#bda489"],
 };
 const [c1, c2] = palettes[variant] ?? palettes.hair;
-const uid = Math.random().toString(36).slice(2, 8);
-const tag = label ?? (src ? "Plassholder" : undefined);
+// Unik gradient-id per forekomst (byggtids-teller – stabil og kollisjonsfri).
+const g = globalThis as { __loriPhUid?: number };
+g.__loriPhUid = (g.__loriPhUid ?? 0) + 1;
+const uid = `ph${g.__loriPhUid}`;
+// Merkelapp kun på den dekorative SVG-plassholderen – aldri over ekte bilder.
+const tag = src ? undefined : label;
 ---
 
 <div class="ph" style={`--ratio:${boxRatio}`} aria-hidden={src ? undefined : "true"}>
@@ -74,12 +110,15 @@ const tag = label ?? (src ? "Plassholder" : undefined);
     src ? (
       <img
         class="ph__img"
-        src={src}
+        src={effectiveSrc}
+        srcset={srcset}
+        sizes={srcset ? (sizes ?? defaultSizes) : undefined}
         alt={alt}
-        width={fit === "natural" ? imgWidth : undefined}
-        height={fit === "natural" ? imgHeight : undefined}
-        loading="lazy"
+        width={imgWidth}
+        height={imgHeight}
+        loading={loading}
         decoding="async"
+        fetchpriority={fetchpriority}
       />
     ) : (
       <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="presentation">
@@ -133,4 +172,3 @@ const tag = label ?? (src ? "Plassholder" : undefined);
     border-radius: 999px;
   }
 </style>
-

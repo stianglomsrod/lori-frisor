@@ -56,3 +56,9 @@ export function resolveLocale(value: string | undefined | null): Locale {
 export function localeHome(locale: Locale): string {
   return locale === defaultLocale ? "/" : `/${locale}/`;
 }
+
+/** Sti til personvernerklæringen per språk (egne, oversatte sider). */
+export const localePrivacy: Record<Locale, string> = {
+  no: "/personvern/",
+  en: "/en/privacy/",
+};

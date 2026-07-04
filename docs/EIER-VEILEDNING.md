@@ -92,7 +92,47 @@ nettleseren for å se resultatet.
 
 ---
 
-## 6. Hvis noe ser feil ut
+## 6. Sosiale medier (også TikTok!)
+
+Under **Salong & kontakt → Sosiale medier** kan du legge til så mange lenker du
+vil – Facebook, Instagram, TikTok, YouTube eller noe annet:
+
+1. Klikk **+** for å legge til en ny.
+2. Velg plattform i nedtrekksmenyen og lim inn lenken til profilen din.
+3. **Save**. Lenken dukker opp i kontaktdelen og nederst på siden, med riktig ikon.
+
+## 7. Egen bookinglenke per tjeneste (valgfritt, men lurt!)
+
+Du kan sende kundene rett til riktig tjeneste i Timma:
+
+1. Åpne bookingsiden din: `bestill.timma.no/lorifrisor`.
+2. Klikk på tjenesten (f.eks. **Klipp**) som om du var kunde.
+3. Kopier hele adressen fra adressefeltet øverst i nettleseren.
+4. I redigeringsverktøyet: **Tjenester & priser** → velg tjenesten → lim inn i
+   **Egen booking-lenke** → **Save**.
+
+Nå havner kunden rett på Klipp-steget når de trykker på kortet. Lar du feltet
+stå tomt, brukes den vanlige bookinglenken – helt trygt.
+
+## 8. Når noen reserverer et produkt
+
+Trykker en kunde **Reserver** på et produkt, fyller de ut et lite skjema (navn,
+telefon, når de vil hente). Da får du en **e-post** til salongens adresse med
+alt du trenger – legg varen til side, og er noe uklart ringer du kunden.
+Kunden betaler i salongen ved henting, akkurat som før. (Er ikke e-posten satt
+opp ennå, sender kunden SMS i stedet – begge deler ender hos deg.)
+
+## 9. Kartet og «informasjonskapsler»
+
+Nederst på siden får besøkende et lite spørsmål om informasjonskapsler. Det er
+helt normalt (alle norske nettsider har det) og skyldes at kartet kommer fra
+Google. Sier de «Kun nødvendige», vises en «Vis kart»-knapp i stedet for
+kartet – alt annet på siden virker akkurat som før. Du trenger ikke gjøre noe.
+
+Nettsiden har også en egen personvernside (lenke nederst på siden). Den
+oppdateres av utvikleren hvis dere endrer hva siden gjør.
+
+## 10. Hvis noe ser feil ut
 
 - Sjekk at du husket å trykke **Save**.
 - Vent et minutt og last nettsiden på nytt.

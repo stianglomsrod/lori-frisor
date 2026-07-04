@@ -11,7 +11,7 @@ hero:
     - Sentralt på Torget 2
     - Klipp & farge for alle
   image: hero-salon.jpg
-  imageAlt: Plassholder – bilde fra salongen
+  imageAlt: 'Illustrasjonsfoto: lys og moderne frisørsalong med stylingplasser og speil'
 about:
   eyebrow: Om oss
   title: En frisør du kan stole på
@@ -25,4 +25,4 @@ about:
     - Rolig atmosfære – godt for både liten og stor
     - Produkter og pleie tilpasset ditt hår
   image: about-salon.jpg
-  imageAlt: Plassholder – bilde fra salongen
+  imageAlt: 'Illustrasjonsfoto: frisør som steller håret til en kunde foran speilet'

@@ -1,13 +1,16 @@
 ---
 import Logo from "./Logo.astro";
+import NewTab from "./NewTab.astro";
 import { getSettings } from "@lib/content";
-import { resolveLocale } from "@i18n/config";
+import { resolveLocale, localeHome, localePrivacy } from "@i18n/config";
 import { useTranslations } from "@i18n/ui";
 
 const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
 const { contact, social, booking } = await getSettings();
 const year = new Date().getFullYear();
+const home = localeHome(locale);
+const privacyHref = localePrivacy[locale];
 ---
 
 <footer class="site-footer">
@@ -16,14 +19,14 @@ const year = new Date().getFullYear();
       <Logo light />
       <p>{t.footer.brand}</p>
       <a class="btn btn--primary" href={booking.url} target="_blank" rel="noopener">
-        {t.cta.book}
+        {t.cta.book}<NewTab />
       </a>
     </div>
 
     <nav class="site-footer__nav" aria-label={t.footer.navAria}>
       <h2 class="site-footer__heading">{t.footer.shortcuts}</h2>
       <ul role="list">
-        {t.nav.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+        {t.nav.map((link) => <li><a href={`${home}${link.href}`}>{link.label}</a></li>)}
       </ul>
     </nav>
 
@@ -31,14 +34,19 @@ const year = new Date().getFullYear();
       <h2 class="site-footer__heading">{t.footer.contact}</h2>
       <address>
         <a href={contact.mapsUrl} target="_blank" rel="noopener">
-          {contact.addressStreet}, {contact.addressCity}
+          {contact.addressStreet}, {contact.addressCity}<NewTab />
         </a><br />
         <a href={`tel:${contact.phone}`}>{contact.phoneDisplay}</a><br />
         <a href={`mailto:${contact.email}`}>{contact.email}</a>
       </address>
       <div class="site-footer__social">
-        <a href={social.facebook} target="_blank" rel="noopener">Facebook</a>
-        <a href={social.instagram} target="_blank" rel="noopener">Instagram</a>
+        {
+          social.map((link) => (
+            <a href={link.url} target="_blank" rel="noopener">
+              {link.label}<NewTab />
+            </a>
+          ))
+        }
       </div>
     </div>
   </div>
@@ -47,6 +55,8 @@ const year = new Date().getFullYear();
     <p>{t.footer.copyright(year)}</p>
     <p class="site-footer__bottom-right">
       <span>{t.footer.bookingVia}</span>
+      <a href={privacyHref}>{t.privacy.footerLink}</a>
+      <a href={privacyHref} data-open-consent>{t.consent.manage}</a>
       <a class="site-footer__edit" href="/keystatic" rel="nofollow">{t.footer.edit}</a>
     </p>
   </div>
@@ -118,7 +128,8 @@ const year = new Date().getFullYear();
   }
   .site-footer__edit {
     font-size: 0.82rem;
-    color: #8c8170 !important;
+    /* AA-kontrast på kull-bakgrunnen (4,5:1-kravet; #8c8170 strøk med 3,79) */
+    color: #a99d8e !important;
     text-decoration: none;
   }
   .site-footer__edit:hover {

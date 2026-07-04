@@ -1,4 +1,5 @@
 ---
+import NewTab from "./NewTab.astro";
 import { getOffers, getSettings } from "@lib/content";
 import { resolveLocale } from "@i18n/config";
 import { useTranslations } from "@i18n/ui";
@@ -27,7 +28,7 @@ const { booking } = await getSettings();
               <p>{offer.description}</p>
               <div class="offer-card__foot">
                 <a class="btn btn--ghost" href={booking.url} target="_blank" rel="noopener">
-                  {t.cta.book}
+                  {t.cta.book}<NewTab />
                 </a>
                 {offer.fineprint && (
                   <p class="offer-card__fine">{offer.fineprint}</p>

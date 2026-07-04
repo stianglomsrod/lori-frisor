@@ -5,11 +5,22 @@ import {
   localeLabel,
   localeHome,
   resolveLocale,
+  type Locale,
 } from "@i18n/config";
 import { useTranslations } from "@i18n/ui";
 
+interface Props {
+  /**
+   * Valgfritt mål per språk (f.eks. personvernsidene). Uten denne peker
+   * velgeren på forsiden for hvert språk.
+   */
+  paths?: Partial<Record<Locale, string>>;
+}
+const { paths } = Astro.props;
+
 const current = resolveLocale(Astro.currentLocale);
 const t = useTranslations(current);
+const hrefFor = (loc: Locale) => paths?.[loc] ?? localeHome(loc);
 ---
 
 <div class="lang-toggle" role="group" aria-label={t.langToggle.aria}>
@@ -22,10 +33,11 @@ const t = useTranslations(current);
       ) : (
         <a
           class="lang-toggle__item"
-          href={localeHome(loc)}
+          href={hrefFor(loc)}
           hreflang={loc}
           lang={loc}
           aria-label={localeLabel[loc]}
+          data-lang-link
         >
           {localeShort[loc]}
         </a>
@@ -33,6 +45,19 @@ const t = useTranslations(current);
     )
   }
 </div>
+
+<script>
+  // Behold seksjonen leseren står i ved språkbytte: heng gjeldende #anker på
+  // språklenken idet den klikkes (ankeridene er like på alle språk).
+  document.querySelectorAll<HTMLAnchorElement>("[data-lang-link]").forEach((link) => {
+    link.addEventListener("click", () => {
+      const base = link.getAttribute("href")?.split("#")[0] ?? "/";
+      if (window.location.hash && !base.includes("#")) {
+        link.href = base + window.location.hash;
+      }
+    });
+  });
+</script>
 
 <style>
   .lang-toggle {

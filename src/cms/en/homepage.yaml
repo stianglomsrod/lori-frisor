@@ -11,7 +11,7 @@ hero:
     - Central at Torget 2
     - Cuts & colour for everyone
   image: hero-salon.jpg
-  imageAlt: Placeholder – photo from the salon
+  imageAlt: 'Stock photo: bright, modern hair salon with styling stations and mirrors'
 about:
   eyebrow: About us
   title: A hairdresser you can trust
@@ -25,4 +25,4 @@ about:
     - A calm atmosphere – good for young and old alike
     - Products and care matched to your hair
   image: about-salon.jpg
-  imageAlt: Placeholder – photo from the salon
+  imageAlt: 'Stock photo: hairdresser styling a client''s hair in front of a mirror'

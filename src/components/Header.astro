@@ -1,31 +1,50 @@
 ---
 import Logo from "./Logo.astro";
 import LanguageToggle from "./LanguageToggle.astro";
+import NewTab from "./NewTab.astro";
 import { getSettings } from "@lib/content";
-import { resolveLocale } from "@i18n/config";
+import { resolveLocale, localeHome, type Locale } from "@i18n/config";
 import { useTranslations } from "@i18n/ui";
+
+interface Props {
+  /** Mål for språkvelgeren på undersider (f.eks. personvern ↔ privacy). */
+  langPaths?: Partial<Record<Locale, string>>;
+}
+const { langPaths } = Astro.props;
 
 const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
 const { booking } = await getSettings();
+// Absolutte ankere («/#tjenester») slik at menyen også virker fra undersider
+// (personvern, 404). På forsiden oppfører de seg som vanlige ankerhopp.
+const home = localeHome(locale);
 ---
 
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="site-header__brand" href="#hovedinnhold" aria-label={t.header.toTop}>
+    <a class="site-header__brand" href={`${home}#hovedinnhold`} aria-label={t.header.toTop}>
       <Logo />
     </a>
 
     <div class="site-header__actions">
       <div class="site-header__lang">
-        <LanguageToggle />
+        <LanguageToggle paths={langPaths} />
       </div>
+      <a
+        class="btn btn--primary site-header__cta"
+        href={booking.url}
+        target="_blank"
+        rel="noopener"
+      >
+        {t.services.book}<NewTab />
+      </a>
       <nav class="site-nav" aria-label={t.header.menuAria}>
         <button
           class="nav-toggle"
           type="button"
           aria-expanded="false"
           aria-controls="hovedmeny"
+          aria-label={t.header.menu}
         >
           <span class="nav-toggle__bars" aria-hidden="true"></span>
           <span class="nav-toggle__label">{t.header.menu}</span>
@@ -36,16 +55,16 @@ const { booking } = await getSettings();
             {
               t.nav.map((link) => (
                 <li>
-                  <a href={link.href}>{link.label}</a>
+                  <a href={`${home}${link.href}`}>{link.label}</a>
                 </li>
               ))
             }
           </ul>
           <div class="site-nav__lang">
-            <LanguageToggle />
+            <LanguageToggle paths={langPaths} />
           </div>
           <a class="btn btn--primary site-nav__cta" href={booking.url} target="_blank" rel="noopener">
-            {t.cta.book}
+            {t.cta.book}<NewTab />
           </a>
         </div>
       </nav>
@@ -78,6 +97,25 @@ const { booking } = await getSettings();
     display: flex;
     align-items: center;
     gap: 0.75rem;
+  }
+
+  /* Kompakt «Bestill time» synlig i headeren på mobil, slik at primær-CTA
+     alltid er innen rekkevidde uten å åpne menyen. Skjules på desktop, der
+     panel-CTA-en tar over. */
+  .site-header__cta {
+    min-height: 2.5rem;
+    padding: 0.45rem 1rem;
+    font-size: 0.92rem;
+    white-space: nowrap;
+  }
+  /* Svært smale skjermer: stram gap og vis menyknappen som ikon. */
+  @media (max-width: 22.5rem) {
+    .site-header__actions {
+      gap: 0.4rem;
+    }
+    .nav-toggle__label {
+      display: none;
+    }
   }
 
   /* Språkvelger vises i menypanelet på mobil, inline på desktop */
@@ -180,6 +218,9 @@ const { booking } = await getSettings();
   /* Desktop: horisontal meny, ingen toggle */
   @media (min-width: 56rem) {
     .nav-toggle {
+      display: none;
+    }
+    .site-header__cta {
       display: none;
     }
     .site-header__lang {

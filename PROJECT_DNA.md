@@ -53,23 +53,29 @@ forståelig ved første øyekast. Enkel nok for eldre, stilig nok for yngre.
 
 ## Teknisk retning
 
-- **Astro** (statisk, null klient-JS som standard). Komponentbasert, rask,
-  tilgjengelig, enkel å deploye og endre innhold i.
-- Innhold ligger i `src/data/*.ts` for enkel utskifting.
-- Én forside med ankerseksjoner (lav navigasjonsfriksjon for eldre brukere).
-- Skrifter via Google Fonts med system-fallback (degraderer pent).
+- **Astro** (statisk, minimalt klient-JS: meny, samtykke, kart-mount,
+  reservasjonsdialog). Komponentbasert, rask, tilgjengelig.
+- Innhold redigeres av eier i **Keystatic** (`src/cms/*.yaml`);
+  `src/data/*.ts` er utvikler-fallback.
+- Én forside med ankerseksjoner (lav navigasjonsfriksjon for eldre brukere),
+  pluss personvernside og 404.
+- Skrifter via Google Fonts med system-fallback – **dokumentert akseptert
+  avvik** (se `DECISIONS.md` D7).
 
 ## Varige regler
 
 - Norsk er standard for all brukervendt tekst.
 - Booking eies av **Timma** – ikke bygg egen booking uten ny, tydelig begrunnelse
   (se `DECISIONS.md`).
+- **Ingen tredjeparts-innbygging/sporing lastes før aktivt samtykke.** Ny
+  tredjepart krever samtidig oppdatering av cookie-register, CSP og
+  personvernerklæring (se `AGENTS.md` → «Consent & privacy»).
 - Placeholder-innhold skal være strukturelt ærlig og merket (se `TECH_DEBT.md`).
 - Ikke regresjoner på tilgjengelighet. Ikke unødvendige avhengigheter.
 - Hold dokumentasjonen i denne mappa oppdatert ved strukturelle endringer.
 
 ## Nåværende begrensninger
 
-- Priser, åpningstider, produkter og tilbud er **placeholder** – må bekreftes.
-- Ingen ekte bilder ennå (SVG-placeholdere brukes).
-- Én side; ingen CMS. Innhold redigeres i `src/data`.
+- Priser, produkter og tilbud er **placeholder** – må bekreftes av eier.
+- Foto er **stock/illustrasjonsfoto** (lisens uavklart) – byttes til egne bilder.
+- Reservasjons-e-post krever engangsoppsett av Brevo (ellers SMS-fallback).

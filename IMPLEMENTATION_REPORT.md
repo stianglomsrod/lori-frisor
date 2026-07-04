@@ -1,6 +1,54 @@
 # IMPLEMENTATION_REPORT – Lori Frisør
 
-Konsis sluttrapport for piloten.
+Konsis sluttrapport. Del A: v0.2 «proff-oppgradering» (leveranseklar).
+Del B: opprinnelig v0.1-pilot (historisk).
+
+---
+
+## Del A – v0.2 «proff-oppgradering» (2026-07-04, leveranseklar)
+
+**Mål:** Gjøre piloten til en leveranse som kan overleveres og deployes på
+salongens domene uten videre kodearbeid.
+
+**Levert:**
+
+1. **Samtykke & personvern** – nøkternt banner etter Datatilsynets krav;
+   Google Maps samtykke-gates (ingen tredjeparts-cookies før aktivt valg,
+   tilbaketrekking fjerner kartet umiddelbart); personvernerklæring NO/EN med
+   korrekt juridisk enhet (LORI-FRISØR AS, org.nr. 926 980 343); Google Fonts
+   beholdt som dokumentert akseptert avvik (D7).
+2. **SEO & deling** – og:image/Twitter-kort, sitemap m/ hreflang, gyldig
+   LocalBusiness JSON-LD (dagkoder, priceRange, hasMap, escaping), 404-side.
+   Prototyp-hosten noindekses automatisk; regelen slipper når ekte domene
+   kobles (null endringer på lanseringsdagen).
+3. **Ytelse** – LCP-bildet eager + fetchpriority; responsive srcset via
+   Vercel-bildeoptimalisering for eieropplastede foto.
+4. **Clean handover i Keystatic** – SoMe som liste (TikTok m.m.), dag som
+   select, Timma-dyplenke per tjeneste, redigerbar avbestillingsregel;
+   trust-barens «Man–fre» utledes av innholdet.
+5. **Produktreservasjon (D9)** – dialogskjema → `/api/reserve` → e-post via
+   Brevo (EU) med honeypot/validering/rate-limit; SMS-fallback uten
+   oppsett/JS/ved feil.
+6. **Kodehygiene & drift** – `src/cms`-flytting, `sharp` deklarert,
+   sikkerhetsheadere/CSP i byggsteget, CI (check+build), Node 22-pinning.
+7. **Compliance-artefakter** (norwegian-software-guardrails) utfylt i
+   `docs/compliance/`: register, cookies, data map, UU-sjekkliste m/ testlogg,
+   sikkerhetsbaseline, risikoregister, release gate.
+
+**Validering v0.2:** `astro check` 0/0/0 · produksjonsbygg grønt · axe-core
+4.12: **0 brudd** på fire tilstander (banner, kart + dialog, personvern,
+engelsk; én arvet kontrastfeil i footer funnet og fikset) · samtykkesyklus,
+skjema-feilfall, mobil 375 px og språkbytte testet interaktivt · bygget HTML
+inspisert (ingen iframe før samtykke, gyldig strukturert data, srcset).
+
+**Gjenstår (kun konto-/eierhandlinger, se `HANDOFF.md` → lanseringsdag):**
+Brevo-oppsett + testsending, Vercel funksjonsregion + domene, MFA-bekreftelse,
+egne foto (stockfoto-lisens uavklart), eiers pris-/innholdsbekreftelse og
+release gate-signering.
+
+---
+
+## Del B – v0.1-pilot (historisk)
 
 ## 1. Hva jeg bygde
 

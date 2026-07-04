@@ -131,8 +131,23 @@ etikett + URL) i stedet for faste Facebook/Instagram-felter. Kjente plattformer
 **Beslutning:** Hver tjeneste i Keystatic har et valgfritt felt «Egen
 booking-lenke». Satt → tjenestekortet lenker dit; tomt → felles booking-lenke.
 
-**Begrunnelse:** Timma støtter `?category=<id>&service=<id>` på bookingsiden
-(verifisert på plattformens finske søsterdomene), men ID-ene er interne og kan
-endres av Timma. Et redigerbart felt er robust: eier klikker seg til tjenesten
-i Timma, kopierer adressen fra adressefeltet og limer inn – og kan fjerne den
-hvis Timma endrer noe. Ingen skjør hardkoding av ID-er i koden.
+**Begrunnelse:** Timma støtter `?category=<id>&service=<id>` på bookingsiden.
+Et redigerbart felt er robust mot at Timma endrer ID-er, og holder koden fri
+for hardkodede ID-er.
+
+**Oppdatering 2026-07-04 – verifisert og utfylt:** Parameterhåndteringen er
+bekreftet i bookingsidens egen kildekode (`?category` settes som aktiv
+kategori, `?service` legges som forhåndsvalgt tjeneste ved lasting), og hele
+tjenestekatalogen med numeriske ID-er er hentet fra Timmas frontend-API
+(`/api/customers/withservices/slug/lorifrisor/public`). Alle ti tjenestekort
+har nå ferdig utfylte dyplenker i innholdet: kategorier med flere varianter
+(Klipp, Farge, Striper, Bleking, Vipper/bryn) lenker til kategori-visning;
+én-tjeneste-kategorier (Skjegg, Extension, Vask og føhn, Hodemassasje, Hårkur)
+forhåndsvelger tjenesten. `scripts/timma-links.mjs` lister katalogen og
+validerer at innholdets lenker fortsatt finnes.
+
+**Vurdert og forkastet – egen bookingflyt mot Timmas API:** API-et som er
+funnet er Timmas *interne* frontend-API (udokumentert, uten avtale/nøkler);
+å bygge egen booking på det ville vært skjørt, tvilsomt vilkårsmessig og
+gjenskapt D1-problemene (betaling, påminnelser, no-show-logikk). Dyplenker gir
+90 % av gevinsten for ~0 % av risikoen.

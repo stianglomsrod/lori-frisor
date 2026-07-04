@@ -97,8 +97,11 @@ Fallback-standarder for utviklere: `src/data/*.ts`. UI-mikrotekst:
 Estimert 1–2 timer totalt, i denne rekkefølgen:
 
 1. **Innhold med eier:** bekreft priser, åpningstider, tilbud; bytt
-   stockfoto mot egne bilder i Keystatic (skriv alt-tekster); fyll inn
-   Timma-dyplenker per tjeneste (kopiér URL fra bookingflyten).
+   stockfoto mot egne bilder i Keystatic (skriv alt-tekster). NB: «fra»-prisene
+   på siden avviker fra de faktiske Timma-prisene (f.eks. Klipp «fra 545» vs.
+   billigste voksenklipp 520/630, Hodemassasje «fra 245» vs. 450) – gå gjennom
+   med eier og juster i Keystatic. Timma-dyplenkene er allerede utfylt;
+   verifiser med et par klikk (`node scripts/timma-links.mjs` lister fasit).
 2. **Brevo (hvis ikke gjort):** konto + verifisert avsender + `BREVO_API_KEY`
    i Vercel → send én testreservasjon og se at e-posten lander riktig.
 3. **Vercel:** Functions-region `arn1`; koble domenet `lorifrisor.no` + `www`

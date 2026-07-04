@@ -17,8 +17,9 @@ Sist oppdatert: 2026-07-04 (branch `feat/proff-oppgradering`).
   kontrastfeil i footer funnet og fikset). NVDA-gjennomgang anbefales fortsatt
   (manuell). Logg i `docs/compliance/accessibility_checklist.md`.
 - **MFA** bekreftes på GitHub/Vercel/Keystatic Cloud/Brevo.
-- **Timma-dyplenker**: eier (eller Stian) henter lenke per tjeneste fra
-  bestill.timma.no og limer inn i Keystatic → «Egen booking-lenke».
+- ~~Timma-dyplenker~~ ✅ utfylt for alle ti tjenester 2026-07-04 (ID-er hentet
+  fra Timmas API, parametre verifisert i bookingsidens kildekode). Vedlikehold:
+  `node scripts/timma-links.mjs` lister katalogen og validerer lenkene.
 
 ## Placeholder-innhold (må bekreftes/erstattes før publisering)
 

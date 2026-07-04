@@ -5,45 +5,55 @@ items:
       simple blow-dry included.
     priceFrom: 545
     category: Hair
+    bookingUrl: https://bestill.timma.no/lorifrisor?category=100
   - title: Colour
     description: >-
       Full colour or root touch-up for a fresh, even result. Price depends on
       hair length.
     priceFrom: 895
     category: Colour
+    bookingUrl: https://bestill.timma.no/lorifrisor?category=150
   - title: Highlights / Balayage / Foilayage
     description: >-
       Natural sweeps or defined highlights for depth and a lighter look.
     priceFrom: 1495
     category: Colour
+    bookingUrl: https://bestill.timma.no/lorifrisor?category=200
   - title: Bleaching
     description: >-
       Lightening for a bright look. We assess the condition of your hair before
       treatment.
     priceFrom: 1295
     category: Colour
+    bookingUrl: https://bestill.timma.no/lorifrisor?category=9550
   - title: Beard
     description: Trimming and shaping of the beard for a well-kept look.
     priceFrom: 295
     category: Beard
+    bookingUrl: https://bestill.timma.no/lorifrisor?category=500&service=502
   - title: Hair extensions
     description: >-
       Length and fullness with extensions. Consultation arranged in advance.
     priceFrom: null
     category: Treatment
+    bookingUrl: https://bestill.timma.no/lorifrisor?category=350&service=351
   - title: Wash and blow-dry
     description: Wash, care and blow-dry for a freshly styled result.
     priceFrom: 395
     category: Hair
+    bookingUrl: https://bestill.timma.no/lorifrisor?category=300&service=301
   - title: Lashes / brows
     description: Shaping and tinting of brows and lashes to frame your eyes.
     priceFrom: 395
     category: Lashes & brows
+    bookingUrl: https://bestill.timma.no/lorifrisor?category=400
   - title: Scalp massage
     description: A relaxing scalp massage as part of the treatment.
     priceFrom: 245
     category: Treatment
+    bookingUrl: https://bestill.timma.no/lorifrisor?category=550&service=552
   - title: Hair treatment
     description: A nourishing treatment that adds shine, moisture and manageability.
     priceFrom: 245
     category: Treatment
+    bookingUrl: https://bestill.timma.no/lorifrisor?category=450&service=459

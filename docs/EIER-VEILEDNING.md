@@ -101,18 +101,17 @@ vil – Facebook, Instagram, TikTok, YouTube eller noe annet:
 2. Velg plattform i nedtrekksmenyen og lim inn lenken til profilen din.
 3. **Save**. Lenken dukker opp i kontaktdelen og nederst på siden, med riktig ikon.
 
-## 7. Egen bookinglenke per tjeneste (valgfritt, men lurt!)
+## 7. Bookinglenkene per tjeneste (allerede ordnet!)
 
-Du kan sende kundene rett til riktig tjeneste i Timma:
+Alle tjenestekortene på siden sender nå kunden **rett til riktig tjeneste**
+hos Timma – trykker noen på «Skjegg», er skjeggtrim allerede valgt. Dette er
+fylt inn ferdig under **Tjenester & priser → Egen booking-lenke**, så du
+trenger ikke gjøre noe.
 
-1. Åpne bookingsiden din: `bestill.timma.no/lorifrisor`.
-2. Klikk på tjenesten (f.eks. **Klipp**) som om du var kunde.
-3. Kopier hele adressen fra adressefeltet øverst i nettleseren.
-4. I redigeringsverktøyet: **Tjenester & priser** → velg tjenesten → lim inn i
-   **Egen booking-lenke** → **Save**.
-
-Nå havner kunden rett på Klipp-steget når de trykker på kortet. Lar du feltet
-stå tomt, brukes den vanlige bookinglenken – helt trygt.
+Bare én ting å huske: **legger du til eller fjerner tjenester i Timma**, si
+ifra til utvikleren, så oppdateres lenkene (det tar to minutter). Blir en
+lenke feil, kan du trygt slette innholdet i «Egen booking-lenke»-feltet –
+da brukes den vanlige bookinglenken i stedet.
 
 ## 8. Når noen reserverer et produkt
 

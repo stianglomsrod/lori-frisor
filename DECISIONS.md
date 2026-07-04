@@ -146,6 +146,12 @@ har nå ferdig utfylte dyplenker i innholdet: kategorier med flere varianter
 forhåndsvelger tjenesten. `scripts/timma-links.mjs` lister katalogen og
 validerer at innholdets lenker fortsatt finnes.
 
+**E2E-verifisert 2026-07-04:** Alle ti dyplenker testet headless (Playwright/
+Chromium) mot bestill.timma.no – 10/10 PASS: tjeneste-lenkene viser tjenesten
+forhåndsvalgt i oppsummeringen («Totalt»-rad), kategori-lenkene åpner riktig
+kategori med variantene synlige og ingenting valgt. I tillegg manuelt bekreftet
+i vanlig nettleser (Skjegg → Skjeggtrim ferdig avhuket på steg 1).
+
 **Vurdert og forkastet – egen bookingflyt mot Timmas API:** API-et som er
 funnet er Timmas *interne* frontend-API (udokumentert, uten avtale/nøkler);
 å bygge egen booking på det ville vært skjørt, tvilsomt vilkårsmessig og

@@ -13,6 +13,11 @@ export type Service = {
   priceFrom: number | null;
   /** Estetisk/kategorisering for ev. filtrering senere. */
   category: "Hår" | "Farge" | "Skjegg" | "Behandling" | "Vipper & bryn";
+  /**
+   * Valgfri dyplenke til akkurat denne tjenesten i Timma
+   * (f.eks. «…/lorifrisor?category=123&service=456»). Tom = felles booking-lenke.
+   */
+  bookingUrl?: string | null;
 };
 
 export const services: Service[] = [

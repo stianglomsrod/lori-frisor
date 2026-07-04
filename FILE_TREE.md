@@ -1,62 +1,100 @@
 # FILE_TREE – Lori Frisør
 
 Oppdater denne når filer legges til, flyttes eller fjernes.
+Sist regenerert: 2026-07-04.
 
 ```text
-lori 2/
-├── astro.config.mjs            # Astro-konfig (statisk, site-URL)
-├── package.json                # Scripts + avhengigheter (astro)
-├── tsconfig.json               # Strict TS + path-aliaser (@components, @data, @layouts)
+lori/
+├── astro.config.mjs            # Astro: i18n, sitemap, Vercel-adapter (imageService)
+├── keystatic.config.ts         # CMS-skjema (per-språk singletons, src/cms-stier)
+├── package.json                # Scripts + avhengigheter (astro, keystatic, sharp, sitemap)
+├── tsconfig.json               # Strict TS + path-aliaser
+├── .nvmrc                      # Node 22 (= Vercel-runtime)
+├── .env.example                # Dokumenterte miljøvariabler (Brevo m.m.)
 ├── .gitignore
-├── README.md                   # Hurtigstart
-├── PROJECT_DNA.md              # Kilde til sannhet (mål, prinsipper, regler)
-├── DECISIONS.md                # Større beslutninger (inkl. Timma vs egen booking)
-├── RESEARCH_NOTES.md           # Research: Timma-side, Timma-selskap, UX-mønstre
-├── TECH_DEBT.md                # Placeholdere, forenklinger, utsatt arbeid
-├── HANDOFF.md                  # Kjøring, status, neste steg for ny agent
-├── VISUAL_REVIEW.md            # Visuell vurdering + iterasjoner + a11y-skann
-├── IMPLEMENTATION_REPORT.md    # Konsis sluttrapport
+├── .github/workflows/ci.yml    # CI: npm run check + build på push/PR
+│
+├── README.md                   # Hurtigstart + dokumentkart
+├── PROJECT_DNA.md              # Kilde til sannhet (mål, prinsipper, varige regler)
+├── AGENTS.md                   # Onboarding for agenter/utviklere (les som nr. 2)
+├── DECISIONS.md                # Beslutninger D1–D11 (Timma, samtykke, Brevo, …)
+├── RESEARCH_NOTES.md           # Research: Timma, UX-mønstre, tilgjengelighet
+├── TECH_DEBT.md                # Placeholdere, aksepterte avvik, gjenstående
+├── HANDOFF.md                  # Status, driftsoppsett, neste steg
+├── VISUAL_REVIEW.md            # Visuelle gjennomganger + a11y-skann
+├── IMPLEMENTATION_REPORT.md    # Historisk sluttrapport for v0.1-piloten
 ├── FILE_TREE.md                # Denne fila
 │
-├── bilder/                     # Eier sine merkevareressurser (kilde, ikke web-assets)
-│   ├── logo saks.jpg           # Gull saks-logo (hovedreferanse)
-│   ├── mørk bakgrunn.jpg       # Logo på mørk bakgrunn
-│   ├── SmartSelect_*.jpg
-│   ├── 18403707_*_n.jpg
-│   ├── LORI LOGO WINDOW top.pdf
-│   ├── LORI LOGO WINDOW BOTTOM.pdf
-│   └── LOGO POSTERBOARD TOP.pdf
+├── bilder/                     # Eiers merkevareressurser (kilde, ikke web-assets)
 │
 ├── docs/
-│   └── screenshots/            # Review-skjermbilder (desktop/mobil/meny/full)
+│   ├── EIER-VEILEDNING.md      # Veiledning for salongens eier (Keystatic m.m.)
+│   ├── compliance/             # Utfylte guardrail-artefakter
+│   │   ├── compliance_register.md
+│   │   ├── cookie_register.md
+│   │   ├── data_map.md
+│   │   ├── accessibility_checklist.md
+│   │   ├── security_baseline.md
+│   │   ├── risk_register.md
+│   │   └── release_gate.md
+│   └── screenshots/            # Review-skjermbilder
 │
 ├── public/
-│   ├── favicon.svg             # Gull saks-favicon på kull
-│   └── robots.txt
+│   ├── favicon.svg / favicon.png / apple-touch-icon.png
+│   ├── lori-emblem*.png        # Logo-varianter (utpakket fra eiers filer)
+│   ├── og.jpg                  # Delingsbilde 1200×630 (scripts/make-og.mjs)
+│   ├── robots.txt              # Peker på sitemap-index.xml (genereres ved bygg)
+│   └── images/                 # Innholdsbilder (Keystatic laster opp hit)
+│
+├── scripts/
+│   ├── extract-logo.mjs        # Engangs: logo fra eiers JPG → PNG-varianter
+│   ├── make-og.mjs             # Genererer public/og.jpg fra hero-bildet
+│   └── patch-vercel-headers.mjs# Sikkerhetsheadere/CSP → .vercel/output/config.json
 │
 └── src/
-    ├── data/                   # ALT redigerbart innhold ligger her
-    │   ├── site.ts             # Navn, kontakt, åpningstider, nav, booking-URL
-    │   ├── services.ts         # Tjenester + veiledende priser
-    │   ├── products.ts         # Produktutvalg (placeholder)
-    │   └── offers.ts           # Tilbud/kampanjer (placeholder)
+    ├── cms/                    # ALT eier-redigerbart innhold (Keystatic-YAML)
+    │   ├── settings.yaml       # Navn, kontakt, SoMe-liste, booking, avbestilling
+    │   ├── opening-hours.yaml  # Åpningstider (dag som select)
+    │   ├── no/                 # homepage|services|products|offers.yaml (norsk)
+    │   └── en/                 # samme struktur (engelsk)
+    ├── data/                   # TS-fallbacks hvis innholdsfil mangler
+    │   ├── site.ts             # + SocialLink-typer
+    │   ├── services.ts         # + valgfri bookingUrl (Timma-dyplenke)
+    │   ├── products.ts
+    │   └── offers.ts
+    ├── i18n/
+    │   ├── config.ts           # Locales, hreflang, localePrivacy-stier
+    │   └── ui.ts               # Mikrotekst NO/EN (inkl. samtykke, skjema, 404)
     ├── layouts/
-    │   └── BaseLayout.astro    # <head>, SEO/OG, fonts, LocalBusiness JSON-LD, skip-link
+    │   └── BaseLayout.astro    # SEO/OG/Twitter, hreflang, JSON-LD (escapet),
+    │                           # theme-color, samtykkebanner, reveal-script
+    ├── lib/
+    │   ├── content.ts          # Keystatic-lesere + fallbacks (typet)
+    │   └── consent-client.ts   # Delt localStorage-logikk for samtykke
     ├── components/
-    │   ├── Logo.astro          # Nytegnet SVG-logo (saks + ordmerke)
-    │   ├── Placeholder.astro   # Dekorativ SVG-bildeplassholder
-    │   ├── Header.astro        # Sticky header + tilgjengelig mobilmeny
-    │   ├── Hero.astro          # Verdiløfte + primær-CTA
-    │   ├── TrustBar.astro      # Adresse / telefon / tider
-    │   ├── Services.astro      # Tjenestekort-rutenett
-    │   ├── Pricing.astro       # Prisbord + konsultasjonsnote
+    │   ├── Header.astro        # Sticky nav, mobil-CTA, språkvelger, absolutte ankere
+    │   ├── Hero.astro          # LCP-bilde eager + fetchpriority
+    │   ├── TrustBar.astro      # Adresse/tlf + åpningsdager UTLEDET av innholdet
+    │   ├── Services.astro      # Kort m/ per-tjeneste booking-lenke
+    │   ├── Pricing.astro       # Prisbord
     │   ├── Offers.astro        # Tilbudskort (skjules om tomt)
-    │   ├── Products.astro      # Produktkort + «Reserver – hent i salong»
-    │   ├── About.astro         # Kort historie/tillit
-    │   ├── Contact.astro       # Adresse, åpningstider, sosialt, CTA
-    │   └── Footer.astro        # Footer-nav + kontakt
+    │   ├── Products.astro      # Produktkort + reservasjonsdialog (m/ SMS-fallback)
+    │   ├── About.astro
+    │   ├── Contact.astro       # Kontakt + samtykke-gatet Google Maps
+    │   ├── Footer.astro        # Nav, SoMe-liste, personvern + «Administrer kapsler»
+    │   ├── ConsentBanner.astro # Nøkternt samtykkebanner (Datatilsynet-krav)
+    │   ├── LanguageToggle.astro# Språkbytte m/ anker-bevaring + undersidestier
+    │   ├── Logo.astro
+    │   ├── Placeholder.astro   # Bilderamme: SVG-fallback, srcset via /_vercel/image
+    │   ├── SocialIcon.astro    # Ikoner for SoMe-plattformer
+    │   └── NewTab.astro        # Skjult «(åpnes i ny fane)»-hint
     ├── pages/
-    │   └── index.astro         # Forsiden (setter sammen alle seksjoner)
+    │   ├── index.astro         # Norsk forside («/»)
+    │   ├── en/index.astro      # Engelsk forside («/en/»)
+    │   ├── personvern.astro    # Personvernerklæring (norsk)
+    │   ├── en/privacy.astro    # Privacy policy (engelsk)
+    │   ├── 404.astro
+    │   └── api/reserve.ts      # Reservasjon → e-post (Brevo), SSR-endepunkt
     └── styles/
-        └── global.css          # Designtokens, typografi, knapper, a11y-hjelpere
+        └── global.css          # Designtokens, typografi, knapper, a11y, dark mode
 ```

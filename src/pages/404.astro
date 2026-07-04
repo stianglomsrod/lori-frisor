@@ -1,0 +1,53 @@
+---
+/**
+ * 404-side. Vercel serverer /404.html automatisk for ukjente stier.
+ * Norsk primært (standardspråket), med en engelsk linje og vei videre.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import { useTranslations } from "@i18n/ui";
+
+const t = useTranslations("no");
+const tEn = useTranslations("en");
+---
+
+<BaseLayout title="Fant ikke siden – Lori Frisør" withJsonLd={false}>
+  <Header />
+  <main id="hovedinnhold">
+    <section class="section">
+      <div class="container notfound">
+        <p class="eyebrow">404</p>
+        <h1>{t.notFound.title}</h1>
+        <p class="notfound__lead">{t.notFound.lead}</p>
+        <p class="notfound__en" lang="en">{tEn.notFound.lead}</p>
+        <div class="notfound__actions">
+          <a class="btn btn--primary" href="/">{t.notFound.backHome}</a>
+          <a class="btn btn--secondary" href="/en/" lang="en">{tEn.notFound.backHome}</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .notfound {
+    max-width: 40rem;
+    padding-block: clamp(2rem, 8vw, 5rem);
+  }
+  .notfound__lead {
+    font-size: 1.15rem;
+    color: var(--color-ink-soft);
+  }
+  .notfound__en {
+    font-size: 0.98rem;
+    color: var(--color-ink-soft);
+  }
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 1.75rem;
+  }
+</style>

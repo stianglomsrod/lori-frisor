@@ -25,10 +25,26 @@ export const contact = {
     "https://www.google.com/maps/search/?api=1&query=Torget+2+1767+Halden",
 } as const;
 
-export const social = {
-  facebook: "https://www.facebook.com/LoriFrisor",
-  instagram: "https://www.instagram.com/lorifrisor/",
-} as const;
+/** Kjente plattformer får eget ikon; «other» får generisk lenke-ikon. */
+export type SocialPlatform =
+  | "facebook"
+  | "instagram"
+  | "tiktok"
+  | "snapchat"
+  | "youtube"
+  | "other";
+
+export type SocialLink = {
+  platform: SocialPlatform;
+  /** Visningsnavn. Tomt = plattformnavnet (f.eks. «Facebook»). */
+  label: string;
+  url: string;
+};
+
+export const social: SocialLink[] = [
+  { platform: "facebook", label: "", url: "https://www.facebook.com/LoriFrisor" },
+  { platform: "instagram", label: "", url: "https://www.instagram.com/lorifrisor/" },
+];
 
 /** Booking håndteres av Timma. Alle «Bestill time»-CTA-er peker hit. */
 export const booking = {

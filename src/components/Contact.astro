@@ -1,21 +1,30 @@
 ---
+import NewTab from "./NewTab.astro";
+import SocialIcon from "./SocialIcon.astro";
 import { getSettings, getOpeningHours } from "@lib/content";
 import { resolveLocale } from "@i18n/config";
 import { useTranslations } from "@i18n/ui";
 
 const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
-const { contact, booking, social } = await getSettings();
+const { contact, booking, social, cancellation } = await getSettings();
 const openingHours = await getOpeningHours();
 
-// Interaktivt kart bygget fra adressefeltene – endrer eier adressen i
-// `site.ts`, oppdaterer kartet seg automatisk (ingen API-nøkkel nødvendig).
+// Kart bygget fra adressefeltene – endrer eier adressen i Keystatic,
+// oppdaterer kartet seg automatisk (ingen API-nøkkel nødvendig).
+// Selve iframen lastes IKKE før besøkeren har samtykket (Google kan sette
+// informasjonskapsler) – enten via banneret eller «Vis kart»-knappen her.
 const mapQuery = encodeURIComponent(
   `${contact.addressStreet}, ${contact.addressZip} ${contact.addressCity}`
 );
 const mapEmbedUrl = `https://maps.google.com/maps?q=${mapQuery}&z=15&hl=${locale}&output=embed`;
 // Deep-link til veibeskrivelse – åpner kart-appen direkte på mobil.
 const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${mapQuery}`;
+const mapTitle = t.contact.mapTitle(
+  `${contact.addressStreet}, ${contact.addressZip} ${contact.addressCity}`,
+);
+// Avbestillingsregelen redigeres av eier i Keystatic (per språk).
+const cancellationNote = cancellation[locale] || t.contact.note;
 ---
 
 <section class="section section--sand" id="kontakt" aria-labelledby="kontakt-tittel">
@@ -33,7 +42,7 @@ const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m
           <p>
             <span class="contact__label">{t.contact.address}</span>
             <a href={contact.mapsUrl} target="_blank" rel="noopener">
-              {contact.addressStreet}, {contact.addressZip} {contact.addressCity}
+              {contact.addressStreet}, {contact.addressZip} {contact.addressCity}<NewTab />
             </a>
           </p>
           <p>
@@ -47,42 +56,18 @@ const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m
         </address>
 
         <div class="contact__social">
-          <a href={social.facebook} target="_blank" rel="noopener">
-            <svg
-              class="contact__social-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-            </svg>
-            Facebook
-          </a>
-          <a href={social.instagram} target="_blank" rel="noopener">
-            <svg
-              class="contact__social-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <rect x="2" y="2" width="20" height="20" rx="5" />
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37Z" />
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-            </svg>
-            Instagram
-          </a>
+          {
+            social.map((link) => (
+              <a href={link.url} target="_blank" rel="noopener">
+                <SocialIcon platform={link.platform} />
+                {link.label}<NewTab />
+              </a>
+            ))
+          }
         </div>
 
         <a class="btn btn--primary contact__cta" href={booking.url} target="_blank" rel="noopener">
-          {t.cta.book}
+          {t.cta.book}<NewTab />
         </a>
       </div>
 
@@ -102,25 +87,35 @@ const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m
           </tbody>
         </table>
         <p class="contact__note">
-          {t.contact.note}
+          {cancellationNote}
         </p>
       </div>
 
-      <div class="contact__map">
-        <iframe
-          title={t.contact.mapTitle(
-            `${contact.addressStreet}, ${contact.addressZip} ${contact.addressCity}`,
-          )}
-          src={mapEmbedUrl}
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          allowfullscreen
-        ></iframe>
+      <div
+        class="contact__map"
+        data-map
+        data-map-src={mapEmbedUrl}
+        data-map-title={mapTitle}
+      >
+        <div class="map-consent" data-map-placeholder>
+          <span class="map-consent__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          </span>
+          <p class="map-consent__text">{t.map.notice}</p>
+          <button type="button" class="btn btn--secondary map-consent__btn" data-map-load>
+            {t.map.load}
+          </button>
+          <p class="map-consent__alt">
+            <a href={contact.mapsUrl} target="_blank" rel="noopener">
+              {t.map.noscript}<NewTab />
+            </a>
+          </p>
+        </div>
       </div>
 
       <p class="contact__directions">
         <a class="btn btn--secondary" href={mapDirectionsUrl} target="_blank" rel="noopener">
-          {t.contact.directions}
+          {t.contact.directions}<NewTab />
         </a>
       </p>
     </div>
@@ -166,6 +161,7 @@ const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m
   }
   .contact__social {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
     margin: 1.5rem 0;
   }
@@ -174,11 +170,6 @@ const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-  }
-  .contact__social-icon {
-    width: 1.15rem;
-    height: 1.15rem;
-    flex: none;
   }
   .contact__cta {
     width: 100%;
@@ -212,6 +203,9 @@ const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m
     font-size: 0.92rem;
     color: var(--color-ink-soft);
   }
+
+  /* Kartboksen: fast høyde uansett om plassholderen eller iframen vises,
+     slik at siden ikke hopper når kartet lastes. */
   .contact__map {
     grid-column: 1 / -1;
     width: 100%;
@@ -219,12 +213,57 @@ const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m
     overflow: hidden;
     border: 1px solid var(--color-line);
     background: var(--color-sand-deep);
+    min-height: 260px;
+    position: relative;
   }
-  .contact__map iframe {
+  /* Iframen settes inn med JavaScript etter samtykke – derfor :global. */
+  .contact__map :global(iframe) {
     width: 100%;
     height: 260px;
     border: 0;
     display: block;
+  }
+  .map-consent {
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--color-sand);
+  }
+  .map-consent[hidden] {
+    display: none;
+  }
+  .map-consent__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    color: var(--color-accent-dark);
+    background: var(--color-white);
+    border: 1px solid var(--color-line);
+  }
+  .map-consent__icon svg {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+  .map-consent__text {
+    max-width: 34rem;
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--color-ink-soft);
+  }
+  .map-consent__alt {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  .map-consent__alt a {
+    color: var(--color-accent-dark);
+    font-weight: 600;
   }
   .contact__directions {
     grid-column: 1 / -1;
@@ -238,8 +277,55 @@ const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m
     .contact {
       grid-template-columns: 1fr 1fr;
     }
-    .contact__map iframe {
+    .contact__map :global(iframe),
+    .map-consent {
       height: 360px;
+    }
+    .contact__map {
+      min-height: 360px;
     }
   }
 </style>
+
+<script>
+  import { readStoredConsent } from "@lib/consent-client";
+
+  const wrap = document.querySelector<HTMLElement>("[data-map]");
+  const placeholder = wrap?.querySelector<HTMLElement>("[data-map-placeholder]");
+
+  const mount = () => {
+    if (!wrap || wrap.querySelector("iframe")) return;
+    const iframe = document.createElement("iframe");
+    iframe.src = wrap.dataset.mapSrc ?? "";
+    iframe.title = wrap.dataset.mapTitle ?? "";
+    iframe.loading = "lazy";
+    iframe.referrerPolicy = "no-referrer-when-downgrade";
+    iframe.allowFullscreen = true;
+    wrap.append(iframe);
+    if (placeholder) placeholder.hidden = true;
+  };
+
+  const unmount = () => {
+    wrap?.querySelector("iframe")?.remove();
+    if (placeholder) placeholder.hidden = false;
+  };
+
+  if (wrap) {
+    // Allerede samtykket (tidligere besøk eller via banneret): last kartet.
+    if (readStoredConsent()?.embeds) mount();
+
+    // «Vis kart» = kontekstuelt samtykke. Banneret lagrer og kringkaster.
+    wrap.querySelector("[data-map-load]")?.addEventListener("click", () => {
+      document.dispatchEvent(
+        new CustomEvent("lori:consent-request", { detail: { embeds: true } }),
+      );
+    });
+
+    // Reager umiddelbart på valg – også når samtykke trekkes tilbake.
+    document.addEventListener("lori:consent", (e) => {
+      const embeds = Boolean((e as CustomEvent).detail?.embeds);
+      if (embeds) mount();
+      else unmount();
+    });
+  }
+</script>

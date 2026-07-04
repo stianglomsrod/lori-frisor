@@ -1,4 +1,5 @@
 ---
+import NewTab from "./NewTab.astro";
 import { getServices, getSettings } from "@lib/content";
 import { resolveLocale } from "@i18n/config";
 import { useTranslations } from "@i18n/ui";
@@ -56,7 +57,7 @@ const onRequest = services.filter((s) => s.priceFrom === null);
       </p>
       <div class="pricing__actions">
         <a class="btn btn--primary" href={booking.url} target="_blank" rel="noopener">
-          {t.cta.book}
+          {t.cta.book}<NewTab />
         </a>
         <a class="btn btn--secondary" href={`tel:${contact.phone}`}>
           {t.pricing.callUs}

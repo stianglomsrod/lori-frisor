@@ -17,6 +17,8 @@ import {
   booking as bookingDefault,
   openingHours as openingHoursDefault,
   navLinks as navLinksDefault,
+  type SocialLink,
+  type SocialPlatform,
 } from "@data/site";
 import { services as servicesDefault, type Service } from "@data/services";
 import { products as productsDefault, type Product } from "@data/products";
@@ -33,6 +35,8 @@ const img = (value: string | null | undefined, fallback: string) => {
 
 /** Strukturell navigasjon ligger i koden (ikke redigerbar av eier). */
 export const navLinks = navLinksDefault;
+
+export type { SocialLink, SocialPlatform };
 
 export type SiteSettings = {
   site: {
@@ -51,9 +55,33 @@ export type SiteSettings = {
     email: string;
     mapsUrl: string;
   };
-  social: { facebook: string; instagram: string };
+  social: SocialLink[];
   booking: { url: string; label: string };
+  /** Avbestillingsregel per språk (redigeres i Keystatic). */
+  cancellation: { no: string; en: string };
 };
+
+const cancellationDefault = {
+  no: "Avbestilling må skje senest 24 timer før timen.",
+  en: "Cancellations must be made at least 24 hours before the appointment.",
+};
+
+/** Visningsnavn for kjente plattformer (fallback når egen etikett er tom). */
+export const socialPlatformLabel: Record<SocialPlatform, string> = {
+  facebook: "Facebook",
+  instagram: "Instagram",
+  tiktok: "TikTok",
+  snapchat: "Snapchat",
+  youtube: "YouTube",
+  other: "Lenke",
+};
+
+/** Sørg for at alle lenker har visningsnavn (tom etikett → plattformnavn). */
+const withSocialLabels = (links: SocialLink[]): SocialLink[] =>
+  links.map((l) => ({
+    ...l,
+    label: l.label || socialPlatformLabel[l.platform] || l.platform,
+  }));
 
 export async function getSettings(): Promise<SiteSettings> {
   const s = await reader.singletons.settings.read();
@@ -61,13 +89,26 @@ export async function getSettings(): Promise<SiteSettings> {
     return {
       site: { ...siteDefault },
       contact: { ...contactDefault },
-      social: { ...socialDefault },
+      social: withSocialLabels([...socialDefault]),
       booking: { ...bookingDefault },
+      cancellation: { ...cancellationDefault },
     };
   }
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     `${s.contact.addressStreet} ${s.contact.addressZip} ${s.contact.addressCity}`,
   )}`;
+  const social: SocialLink[] =
+    s.social && s.social.length > 0
+      ? withSocialLabels(
+          s.social
+            .filter((item) => item.url)
+            .map((item) => ({
+              platform: item.platform as SocialPlatform,
+              label: item.label ?? "",
+              url: item.url as string,
+            })),
+        )
+      : withSocialLabels([...socialDefault]);
   return {
     site: {
       name: s.name,
@@ -85,13 +126,14 @@ export async function getSettings(): Promise<SiteSettings> {
       email: s.contact.email,
       mapsUrl,
     },
-    social: {
-      facebook: s.social.facebook ?? socialDefault.facebook,
-      instagram: s.social.instagram ?? socialDefault.instagram,
-    },
+    social,
     booking: {
       url: s.booking.url ?? bookingDefault.url,
       label: s.booking.label || bookingDefault.label,
+    },
+    cancellation: {
+      no: s.cancellation?.no || cancellationDefault.no,
+      en: s.cancellation?.en || cancellationDefault.en,
     },
   };
 }
@@ -146,7 +188,8 @@ const homepageFallback: Homepage = {
       "Klipp & farge for alle",
     ],
     image: "/images/hero-salon.jpg",
-    imageAlt: "Plassholder – bilde fra salongen",
+    imageAlt:
+      "Illustrasjonsfoto: lys og moderne frisørsalong med stylingplasser og speil",
   },
   about: {
     eyebrow: "Om oss",
@@ -158,7 +201,8 @@ const homepageFallback: Homepage = {
       "Produkter og pleie tilpasset ditt hår",
     ],
     image: "/images/about-salon.jpg",
-    imageAlt: "Plassholder – bilde fra salongen",
+    imageAlt:
+      "Illustrasjonsfoto: frisør som steller håret til en kunde foran speilet",
   },
 };
 
@@ -213,6 +257,7 @@ export async function getServices(
     description: it.description,
     priceFrom: it.priceFrom ?? null,
     category: it.category as Service["category"],
+    bookingUrl: it.bookingUrl ?? null,
   }));
 }
 
@@ -240,7 +285,8 @@ export async function getProducts(
     price: it.price ?? 0,
     category: it.category as Product["category"],
     featured: Boolean(it.featured),
-    image: img(it.image, "/images/hero-salon.jpg"),
+    // Uten bilde: tom sti → komponenten viser den dekorative SVG-plassholderen.
+    image: img(it.image, ""),
   }));
 }
 

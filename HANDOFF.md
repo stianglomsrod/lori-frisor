@@ -1,97 +1,82 @@
 # HANDOFF – Lori Frisør
 
 For neste agent/utvikler. Les `PROJECT_DNA.md` først, så denne.
+Sist oppdatert: 2026-07-04 (branch `feat/proff-oppgradering`).
 
 ## Kjøre prosjektet
 
-Krever Node 18+ (utviklet på Node 24).
+Krever Node 22+ (`.nvmrc` = 22; utviklet på Node 24, Vercel kjører 22).
 
 ```bash
 npm install      # installer avhengigheter
-npm run dev      # lokal dev-server (http://localhost:4321)
-npm run build    # produksjonsbygg (Vercel-adapter)
+npm run dev      # lokal dev-server (http://localhost:4321, Keystatic på /keystatic)
+npm run build    # produksjonsbygg (Vercel Build Output + sikkerhetsheadere)
 npm run preview  # forhåndsvis bygget
-npm run check    # Astro/TypeScript-typesjekk
+npm run check    # Astro/TypeScript-typesjekk — hold 0/0/0
 ```
 
-Deploy: prosjektet bruker `@astrojs/vercel`-adapteren og er ment for **Vercel**.
-Forsiden er fortsatt forhåndsrendret (statisk, null klient-JS); kun
-redigeringsverktøyet `/keystatic` kjører server-side. Koble GitHub-repoet til
-Vercel én gang – deretter bygges siden automatisk hver gang innhold endres.
+Deploy: Vercel (`@astrojs/vercel`). Push til GitHub → automatisk bygg.
+`npm run build` kjører også `scripts/patch-vercel-headers.mjs` som legger
+sikkerhetsheadere/CSP inn i `.vercel/output/config.json` (ikke bruk
+`vercel.json` – støttes ikke sammen med adapterens Build Output API).
 
-## Hva som er bygget
+## Status (hva som er gjort på denne branchen)
 
-En komplett, responsiv, tilgjengelig **forside** for Lori Frisør (Astro, statisk):
+- ✅ Samtykkeløsning etter Datatilsynets krav: banner + «Vis kart»-gate for
+  Google Maps (ingen tredjeparts-cookies før aktivt valg; tilbaketrekking
+  fjerner iframen umiddelbart). Verifisert i nettleser.
+- ✅ Personvernerklæring på `/personvern` + `/en/privacy` (LORI-FRISØR AS,
+  org.nr. 926 980 343 – slått opp i Enhetsregisteret).
+- ✅ SEO: `og:image` (generert `public/og.jpg`), Twitter-kort, sitemap m/
+  hreflang, gyldig LocalBusiness JSON-LD (Mo–Fr-koder, priceRange, hasMap),
+  404-side.
+- ✅ Ytelse: hero = eager + fetchpriority; responsive bilder via Vercels
+  bildeoptimalisering (`/_vercel/image`-srcset bygges i `Placeholder.astro`).
+- ✅ Keystatic-utvidelser: SoMe som liste (TikTok m.m.), åpningsdag som
+  select, valgfri Timma-dyplenke per tjeneste, redigerbar avbestillingsregel.
+- ✅ Produktreservasjon: dialog-skjema → `/api/reserve` → e-post via Brevo,
+  med SMS-fallback. Se «Reservasjonsoppsett» under.
+- ✅ Kodehygiene: `sharp` deklarert, innhold flyttet `src/content` → `src/cms`
+  (Astro-reservert mappe), JSON-LD escapes, CI-workflow, `.nvmrc`/engines.
+- ✅ Compliance-artefakter i `docs/compliance/` (register, cookies, data map,
+  UU-sjekkliste, sikkerhetsbaseline, risiko, release gate).
 
-- Header m/ sticky nav + tilgjengelig mobilmeny
-- Hero m/ verdiløfte og primær-CTA «Bestill time» (→ Timma)
-- Trust-bar (adresse/telefon/tider)
-- Tjenester (kort), Priser (bord), Tilbud (kort), Produkter (m/ «Reserver»)
-- Om, Kontakt (åpningstider, kart-lenke, sosialt), Footer
-- SEO/OG-metadata + LocalBusiness structured data
-- WCAG 2.2 AA-rettet (axe: 0 violations) – se `VISUAL_REVIEW.md`
+## Reservasjonsoppsett (én gang, ~15 min)
 
-Booking gjøres **ikke** på siden – alle CTA peker til Timma. Se `DECISIONS.md` D1.
+1. Opprett gratis Brevo-konto (brevo.com) og verifiser en avsenderadresse
+   (f.eks. `nettside@lorifrisor.no` – krever DNS-verifisering av domenet,
+   eller bruk en adresse dere eier).
+2. I Vercel-prosjektet → Settings → Environment Variables:
+   - `BREVO_API_KEY` = API-nøkkelen (Production)
+   - `BREVO_SENDER` = den verifiserte avsenderadressen
+   - (valgfritt) `RESERVATION_TO` – ellers brukes e-posten fra Keystatic
+3. Redeploy og send en testreservasjon. Uten nøkkel viser siden SMS-lenker
+   (bevisst fallback) – ingenting brekker.
+
+## Andre driftspunkter
+
+- **Vercel funksjonsregion:** sett `arn1` (Stockholm) i prosjektinnstillingene
+  (Functions → Region) for EØS-nær behandling.
+- **Keystatic Cloud:** konfigurert (`cloud.project: "lori/lori-frisor"`), eier
+  redigerer på `/keystatic` med e-postinnlogging. Innholds-commits fra Cloud
+  ser ut som «Update src/cms/…».
+- **Timma-dyplenker:** åpne bestill.timma.no/lorifrisor, klikk deg til en
+  tjeneste, kopier adressen (inneholder `?category=…&service=…`) og lim inn i
+  Keystatic → Tjenester → «Egen booking-lenke».
+- **CI:** `.github/workflows/ci.yml` bygger + typesjekker push/PR mot main.
 
 ## Hvor man endrer innhold
 
-### For eier: redigeringsverktøyet (Keystatic)
-
-Eieren endrer tekst, priser og bilder selv – uten kode og uten utvikler:
-
-- **Lokalt under utvikling:** gå til `http://localhost:4321/keystatic`.
-- **På den publiserte siden:** gå til `https://<domenet>/keystatic`.
-
-Endringer lagres som vanlige filer i prosjektet (`src/content/*.yaml` + bilder i
-`public/images/`), og Vercel bygger siden på nytt automatisk. Bilder lastes opp
-direkte i verktøyet.
-
-**Engangsoppsett for innlogging uten GitHub-konto (Keystatic Cloud):**
-
-1. Logg inn på <https://keystatic.cloud> og opprett et team + prosjekt.
-2. Koble prosjektet til dette GitHub-repoet.
-3. Bytt ut `cloud.project` i `keystatic.config.ts` (nå `"lori-frisor/nettside"`)
-   med din ekte `"team/prosjekt"`-verdi.
-4. Inviter eier som bruker (gratis for inntil 3 brukere). Da kan hun logge inn
-   på `/keystatic` med e-post – helt uten GitHub-konto.
-
-### For utvikler: standardverdier og struktur
-
-`src/content/*.yaml` er innholdet eieren redigerer. `src/lib/content.ts` leser
-dette og faller tilbake på standardverdiene i `src/data/*.ts` hvis en fil
-mangler. Selve skjemaet (hva eier ser i verktøyet) defineres i
-`keystatic.config.ts`.
-
-- `settings.yaml` – navn, kontakt, sosialt, **booking-URL**
-- `opening-hours.yaml` – **åpningstider** (huk av «Stengt» per dag)
-- `homepage.yaml` – hero- og om-tekst + bilder
-- `services.yaml` – tjenester + **veiledende priser**
-- `products.yaml` – produktutvalg + bilder
-- `offers.yaml` – tilbud (tom liste skjuler hele seksjonen)
-
-Navigasjon ligger fortsatt i koden (`src/data/site.ts` → `navLinks`).
-Farger/typografi: `src/styles/global.css` (CSS-variabler øverst i `:root`).
-Logo: `src/components/Logo.astro` + `public/favicon.svg`.
-
-## Hvor placeholdere finnes (må erstattes)
-
-Se `TECH_DEBT.md` for full liste. Kort: priser, åpningstider, produkter, tilbud,
-alle bilder (SVG-placeholdere), om-/hero-tekst, kart-lenke.
-
-## Status
-
-- ✅ Bygger rent (`npm run build`, `npm run check`: 0 feil).
-- ✅ Tilgjengelighet: axe-core 0 violations; kontrast manuelt verifisert.
-- ✅ Visuelt gjennomgått på desktop + mobil (se `docs/screenshots/`).
-- ⚠️ Innhold er delvis placeholder – ikke publiser før eier har bekreftet
-  priser, åpningstider, produkter og bilder.
+Uendret prinsipp: eier bruker Keystatic (`/keystatic`); filene ligger nå i
+`src/cms/*.yaml` (flyttet fra `src/content/` som er Astro-reservert).
+Fallback-standarder for utviklere: `src/data/*.ts`. UI-mikrotekst:
+`src/i18n/ui.ts`. Farger/typografi: `src/styles/global.css`.
 
 ## Anbefalte neste steg (prioritert)
 
-1. Hent ekte foto (hero, salong, produkter) + bekreft priser/åpningstider.
-2. Bytt SVG-logo mot eksportert vektor av originalen om ønskelig.
-3. Få eier til å godkjenne copy (hero, om, tilbud).
-4. Vurder kundeomtaler/Google-rating for ekstra tillit.
-5. Vurder `@astrojs/sitemap` og self-hostede fonts (Fontsource) før lansering.
-6. Ekstern visuell QA på 1440px-skjerm (innebygd panel var upålitelig for brede skudd).
-7. Sett opp Keystatic Cloud-prosjektet (se over) og deploy til Vercel + koble domenet.
+1. Release-gaten (`docs/compliance/release_gate.md`): Brevo-test, region,
+   MFA, fotolisens, axe-retest, eiers pris-/innholdsbekreftelse.
+2. Ekte foto fra salongen (hero, om, produkter) – behold beskrivende alt-tekster.
+3. Merge `feat/proff-oppgradering` → main og deploy; kjør Rich Results-test på
+   forsiden (Google) og del-forhåndsvisning (Facebook Sharing Debugger).
+4. Vurder kundeomtaler/Google-rating som neste tillitslag.

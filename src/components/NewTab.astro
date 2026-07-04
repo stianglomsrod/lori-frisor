@@ -1,0 +1,12 @@
+---
+/**
+ * Skjult hint for skjermlesere på lenker med target="_blank":
+ * «(åpnes i ny fane)». Legges rett etter lenketeksten.
+ */
+import { resolveLocale } from "@i18n/config";
+import { useTranslations } from "@i18n/ui";
+
+const t = useTranslations(resolveLocale(Astro.currentLocale));
+---
+
+<span class="visually-hidden">&nbsp;{t.common.newTab}</span>

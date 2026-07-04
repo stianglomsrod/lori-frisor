@@ -75,3 +75,27 @@ Bygget, kjørt lokalt og inspisert på desktop og mobil.
 - `docs/screenshots/mobile-hero.png` – mobil header + hero
 - `docs/screenshots/mobile-menu.png` – åpen mobilmeny (tilgjengelig)
 - `docs/screenshots/full-page.png` – hele forsiden
+
+## C. Verifisering av proff-oppgraderingen (2026-07-04, i nettleser)
+
+Interaktivt testet i dev-server (desktop + 375 px mobil, mørk modus):
+
+- **Samtykkebanner:** vises kun ved første besøk; «Godta alle» og «Kun
+  nødvendige» er likeverdige (ett klikk hver); valget lagres
+  (`lori-consent-v1`) og banneret vises ikke igjen.
+- **Kart-gate:** uten samtykke = ingen `<iframe>` i DOM (også bekreftet i bygget
+  HTML: 0 treff). «Vis kart» gir kontekstuelt samtykke → iframe med riktig
+  tittel/adresse. Footer → «Administrer informasjonskapsler» → «Kun
+  nødvendige» **fjerner iframen umiddelbart** og gjenoppretter plassholderen.
+- **Reservasjonsdialog:** åpner med produktnavn forhåndsutfylt, fokus til
+  Navn-feltet, alle felt med etiketter; sendefeil (uten Brevo-nøkkel) gir norsk
+  feilmelding i `role="status"` + fungerende SMS-reservelenke; submit
+  reaktiveres.
+- **Mobilheader:** kompakt gull «Bestill» synlig ved siden av Meny-knappen;
+  banner-knappene stabler pent på smal skjerm.
+- **Språkbytte på personvernsiden** peker riktig på `/en/privacy/`.
+- **Konsoll:** ingen feil eller advarsler.
+- **Bygget HTML:** gyldig JSON-LD `openingHours` (Mo–Fr + normaliserte
+  klokkeslett), `priceRange`, `og:image`/Twitter-kort, `srcset` mot
+  `/_vercel/image`, hero med `fetchpriority="high"`, 0 «Plassholder»-badges
+  over foto, sitemap med hreflang (404 ekskludert).

@@ -13,8 +13,15 @@ contact:
   phoneDisplay: 450 50 677
   email: cindy@lori.no
 social:
-  facebook: https://www.facebook.com/LoriFrisor
-  instagram: https://www.instagram.com/lorifrisor/
+  - platform: facebook
+    label: ''
+    url: https://www.facebook.com/LoriFrisor
+  - platform: instagram
+    label: ''
+    url: https://www.instagram.com/lorifrisor/
 booking:
   url: https://bestill.timma.no/lorifrisor
   label: Bestill time
+cancellation:
+  'no': Avbestilling må skje senest 24 timer før timen.
+  en: Cancellations must be made at least 24 hours before the appointment.

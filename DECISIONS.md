@@ -64,3 +64,75 @@ for gull-farget tekst på lys bakgrunn.
 i `src/data/*.ts`.
 **Begrunnelse:** Ingen binære dummy-assets i repo; alt er strukturelt ærlig, merket
 og trivielt å bytte ut. Se `TECH_DEBT.md`.
+**Status 2026-07:** Delvis erstattet: Keystatic (`src/cms/*.yaml`) er nå
+innholdskilden med `src/data/*.ts` som fallback; stockfoto ligger i
+`public/images/` merket «Illustrasjonsfoto» i alt-tekst. «Plassholder»-merket
+vises kun på rene SVG-plassholdere, aldri over ekte bilder.
+
+## D7. Behold Google Fonts + Google Maps – med samtykke-gate (akseptert avvik)
+
+**Beslutning (kundens valg, 2026-07-04):** Google Fonts beholdes eksternt, og
+kart-iframen fra Google Maps beholdes – men kartet lastes **kun etter aktivt
+samtykke** (banner eller «Vis kart»). Fonts lastes alltid og dokumenteres som
+**akseptert avvik**.
+
+**Vurderte alternativer:** (1) self-host fonts + kun kartlenke (mest privacy-
+vennlig), (2) behold begge uten gate (ikke forsvarlig for cookies), (3) behold
+begge med samtykke-gate på kartet ✅.
+
+**Begrunnelse:** Eier/utvikler ønsker Google-integrasjonene. Maps-cookies krever
+samtykke (ekomloven/Datatilsynet) og gates derfor teknisk; fonts setter ingen
+cookies, men eksponerer IP – det er beskrevet åpent i personvernerklæringen med
+berettiget interesse som grunnlag, og ført i `docs/compliance/risk_register.md`
+(#1) med Fontsource som exit-plan (~1 time).
+
+## D8. Samtykkeløsning: egenbygd minimal banner (ikke CMP)
+
+**Beslutning:** Egenbygd banner (`ConsentBanner.astro`) + kontekstuell
+«Vis kart»-knapp, valg lagret i `localStorage` (`lori-consent-v1`), én
+konsentskategori (tredjeparts-innbygginger).
+
+**Begrunnelse:** Siden har nøyaktig ÉN ikke-nødvendig tredjepart. En kommersiell
+CMP (Cookiebot m.fl.) ville vært tyngre, dyrere og selv lastet tredjeparts-script.
+Egenbygd oppfyller Datatilsynets krav målbart: aktivt valg, like lett å avslå
+(to likeverdige knapper), like lett å trekke tilbake (footer-lenke; iframen
+fjernes umiddelbart – verifisert i test). Revurder CMP hvis flere
+sporingsteknologier noen gang legges til.
+
+## D9. Produktreservasjon: e-postskjema via Brevo – ikke database/autobooking
+
+**Beslutning:** «Reserver» åpner et lite skjema (navn, telefon, ev. e-post,
+ønsket hentedag, melding) som sendes som **e-post til salongen** via
+`/api/reserve` + Brevo (EU). Ingen database, ingen lagerkobling, ingen
+nettbetaling. SMS-lenken beholdes som fallback (ingen JS, intet Brevo-oppsett,
+eller sendefeil).
+
+**Vurderte alternativer:** (1) kun SMS/tel som før, (2) e-postskjema ✅,
+(3) ekte click-and-collect m/ database og Timma-lager.
+
+**Begrunnelse:** Salongen er én ansatt – innboksen er arbeidsflaten. Skjemaet
+senker terskelen (mange kvier seg for SMS), gir strukturert info (produkt +
+tidspunkt automatisk med) og krever null nye systemer. Database/autobooking gir
+ingen gevinst på denne størrelsen og ville dratt inn lager-synk og
+personvern-byrde. Brevo valgt som EU-leverandør (dataminimering i
+tredjelandsbildet); gratis-kvoten (300/dag) er langt over behovet.
+
+## D10. Sosiale medier som redigerbar liste i Keystatic
+
+**Beslutning:** `social` i innstillingene er en liste (plattform + valgfri
+etikett + URL) i stedet for faste Facebook/Instagram-felter. Kjente plattformer
+(Facebook, Instagram, TikTok, YouTube) får ikon; andre får nøytralt lenkeikon.
+
+**Begrunnelse:** Eier skal kunne legge til TikTok m.m. selv uten utvikler
+(clean handover). JSON-LD `sameAs` følger listen automatisk.
+
+## D11. Timma-dyplenker per tjeneste via valgfritt felt
+
+**Beslutning:** Hver tjeneste i Keystatic har et valgfritt felt «Egen
+booking-lenke». Satt → tjenestekortet lenker dit; tomt → felles booking-lenke.
+
+**Begrunnelse:** Timma støtter `?category=<id>&service=<id>` på bookingsiden
+(verifisert på plattformens finske søsterdomene), men ID-ene er interne og kan
+endres av Timma. Et redigerbart felt er robust: eier klikker seg til tjenesten
+i Timma, kopierer adressen fra adressefeltet og limer inn – og kan fjerne den
+hvis Timma endrer noe. Ingen skjør hardkoding av ID-er i koden.

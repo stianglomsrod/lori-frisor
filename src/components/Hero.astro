@@ -1,5 +1,6 @@
 ---
 import Placeholder from "./Placeholder.astro";
+import NewTab from "./NewTab.astro";
 import { getSettings, getHomepage } from "@lib/content";
 import { resolveLocale } from "@i18n/config";
 import { useTranslations } from "@i18n/ui";
@@ -23,7 +24,7 @@ const { hero } = await getHomepage(locale);
 
       <div class="hero__actions">
         <a class="btn btn--primary" href={booking.url} target="_blank" rel="noopener">
-          {t.cta.book}
+          {t.cta.book}<NewTab />
         </a>
         <a class="btn btn--secondary" href="#tjenester">{t.hero.seeServices}</a>
       </div>
@@ -40,6 +41,9 @@ const { hero } = await getHomepage(locale);
         variant="salon"
         ratio="4 / 5"
         label={t.common.placeholder}
+        loading="eager"
+        fetchpriority="high"
+        sizes="(min-width: 56rem) 416px, 92vw"
       />
     </div>
   </div>

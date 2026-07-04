@@ -1,0 +1,49 @@
+---
+/**
+ * Ikon for sosiale medier-lenker. Kjente plattformer får eget ikon;
+ * ukjente («other», Snapchat m.fl.) får et nøytralt lenkeikon.
+ * Alltid dekorativt (aria-hidden) – lenketeksten bærer meningen.
+ */
+import type { SocialPlatform } from "@data/site";
+
+interface Props {
+  platform: SocialPlatform;
+}
+const { platform } = Astro.props;
+---
+
+{
+  platform === "facebook" ? (
+    <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  ) : platform === "instagram" ? (
+    <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="2" y="2" width="20" height="20" rx="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37Z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  ) : platform === "tiktok" ? (
+    <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+      <path d="M16.6 5.82a4.28 4.28 0 0 1-1.05-2.82h-3.07v12.06a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12V9.4a5.76 5.76 0 0 0-.78-.05 5.71 5.71 0 1 0 5.71 5.71V9.01a7.35 7.35 0 0 0 4.3 1.38V7.32a4.34 4.34 0 0 1-3.3-1.5Z" />
+    </svg>
+  ) : platform === "youtube" ? (
+    <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="2" y="5" width="20" height="14" rx="4" />
+      <path d="m10 9.5 5 2.5-5 2.5z" />
+    </svg>
+  ) : (
+    <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+    </svg>
+  )
+}
+
+<style>
+  .social-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex: none;
+  }
+</style>

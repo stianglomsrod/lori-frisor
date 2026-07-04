@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
-import { getSettings, getOpeningHours } from "@lib/content";
+import ConsentBanner from "@components/ConsentBanner.astro";
+import { getSettings, getOpeningHours, getServices } from "@lib/content";
 import {
   resolveLocale,
   htmlLang,
@@ -14,18 +15,23 @@ const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
 const { site, contact, social } = await getSettings();
 const openingHours = await getOpeningHours();
+const services = await getServices(locale);
 
 interface Props {
   title?: string;
   description?: string;
+  /** Sett false på undersider (personvern, 404) som ikke skal indeks-prioriteres. */
+  withJsonLd?: boolean;
 }
 
 const {
   title = `${site.name} – ${t.seo.tagline}`,
   description = t.seo.description,
+  withJsonLd = true,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+const ogImage = new URL("/og.jpg", Astro.site ?? site.url).href;
 // hreflang-alternativer for søkemotorer (én URL per språk).
 const alternates = locales.map((loc) => ({
   hreflang: htmlLang[loc],
@@ -34,13 +40,48 @@ const alternates = locales.map((loc) => ({
 }));
 const defaultHref = alternates[0].href;
 
-// Strukturert data (LocalBusiness) – styrker lokal synlighet i søk.
+// --- Strukturert data (LocalBusiness) – styrker lokal synlighet i søk. ---
+// schema.org-krav: engelske dagkoder (Mo–Su) og bindestrek i tidsrom.
+const dayCode: Record<string, string> = {
+  Mandag: "Mo",
+  Tirsdag: "Tu",
+  Onsdag: "We",
+  Torsdag: "Th",
+  Fredag: "Fr",
+  Lørdag: "Sa",
+  Søndag: "Su",
+};
+// Normaliser eier-skrevne tider («09.00–16.00» → «09:00-16:00»); ugyldige
+// verdier utelates fra strukturert data i stedet for å forurense den.
+const normalizeHours = (value: string): string | null => {
+  const v = value.replace(/\./g, ":").replace(/[–—]/g, "-").replace(/\s+/g, "");
+  return /^\d{1,2}:\d{2}-\d{1,2}:\d{2}$/.test(v) ? v : null;
+};
+const schemaOpeningHours = openingHours
+  .filter((d) => !d.closed)
+  .map((d) => {
+    const code = dayCode[d.day];
+    const hours = normalizeHours(d.hours);
+    return code && hours ? `${code} ${hours}` : null;
+  })
+  .filter((v): v is string => v !== null);
+
+const prices = services
+  .map((s) => s.priceFrom)
+  .filter((p): p is number => p !== null);
+const priceRange =
+  prices.length > 0
+    ? `kr ${Math.min(...prices)}–${Math.max(...prices)}`
+    : undefined;
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "HairSalon",
+  "@id": `${site.url}/#salong`,
   name: site.name,
   description: t.seo.description,
   url: site.url,
+  image: ogImage,
   telephone: `+47${contact.phone}`,
   email: contact.email,
   address: {
@@ -50,11 +91,13 @@ const jsonLd = {
     addressLocality: contact.addressCity,
     addressCountry: "NO",
   },
-  sameAs: [social.facebook, social.instagram],
-  openingHours: openingHours
-    .filter((d) => !("closed" in d && d.closed))
-    .map((d) => `${d.day.slice(0, 2)} ${d.hours}`),
+  hasMap: contact.mapsUrl,
+  sameAs: social.map((s) => s.url),
+  openingHours: schemaOpeningHours,
+  ...(priceRange ? { priceRange } : {}),
 };
+// «</script>» i CMS-innhold skal aldri kunne bryte ut av script-taggen.
+const jsonLdSafe = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 ---
 
 <!doctype html>
@@ -77,11 +120,18 @@ const jsonLd = {
     <link rel="alternate" hreflang="x-default" href={defaultHref} />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#faf7f1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1b1815" media="(prefers-color-scheme: dark)" />
 
-    <!-- Open Graph -->
+    <!-- Open Graph / deling (Facebook, Instagram, meldingsapper) -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} – ${t.seo.tagline}`} />
     <meta property="og:locale" content={ogLocale[locale]} />
     {
       alternates
@@ -92,6 +142,12 @@ const jsonLd = {
     }
     <meta property="og:site_name" content={site.name} />
 
+    <!-- Twitter/X-delingskort -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
     <!-- Skrifter: lastes med swap og degraderer pent til system-skrift -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -100,15 +156,16 @@ const jsonLd = {
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap"
     />
 
-    <script
-      type="application/ld+json"
-      is:inline
-      set:html={JSON.stringify(jsonLd)}
-    />
+    {
+      withJsonLd && (
+        <script type="application/ld+json" is:inline set:html={jsonLdSafe} />
+      )
+    }
   </head>
   <body>
     <a class="skip-link" href="#hovedinnhold">{t.skipLink}</a>
     <slot />
+    <ConsentBanner />
 
     <script>
       // Diskré scroll-avsløring: legg til .is-visible når elementet kommer i syne.

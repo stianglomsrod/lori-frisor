@@ -1,0 +1,230 @@
+---
+/**
+ * Personvernerklæring (norsk). Engelsk versjon: src/pages/en/privacy.astro.
+ * Kontaktinfo hentes fra Keystatic-innstillingene slik at siden følger
+ * eierens endringer. Organisasjonsnummeret er slått opp i Enhetsregisteret.
+ *
+ * NB: Praktisk informasjonstekst – ikke juridisk rådgivning. Ved vesentlige
+ * endringer i databehandlingen (nyhetsbrev, analyse, netthandel) må siden
+ * oppdateres FØR endringen settes i produksjon.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import { getSettings } from "@lib/content";
+import { localePrivacy } from "@i18n/config";
+
+const { site, contact } = await getSettings();
+const orgNr = "926 980 343"; // LORI-FRISØR AS (Enhetsregisteret)
+const updated = "4. juli 2026";
+---
+
+<BaseLayout
+  title={`Personvernerklæring – ${site.name}`}
+  description={`Hvordan ${site.name} behandler personopplysninger på ${site.url.replace("https://", "")}.`}
+  withJsonLd={false}
+>
+  <Header langPaths={localePrivacy} />
+  <main id="hovedinnhold">
+    <section class="section">
+      <div class="container privacy">
+        <p class="eyebrow">Personvern</p>
+        <h1>Personvernerklæring</h1>
+        <p class="privacy__lead">
+          Denne siden forklarer hva som skjer med personopplysninger når du
+          bruker nettsiden til {site.name}. Kort oppsummert: Nettsiden har
+          ingen innlogging, ingen analyseverktøy og ingen markedsføringssporing.
+        </p>
+
+        <h2>Hvem er ansvarlig</h2>
+        <p>
+          LORI-FRISØR AS (org.nr. {orgNr}), {contact.addressStreet},
+          {contact.addressZip} {contact.addressCity}, er behandlingsansvarlig
+          for behandlingen som beskrives her. Spørsmål kan sendes til{" "}
+          <a href={`mailto:${contact.email}`}>{contact.email}</a> eller ringes
+          inn på <a href={`tel:${contact.phone}`}>{contact.phoneDisplay}</a>.
+        </p>
+
+        <h2>Hva vi behandler – og hvorfor</h2>
+
+        <h3>Besøk på nettsiden</h3>
+        <p>
+          Nettsiden ligger hos Vercel. Som alle nettsteder registrerer
+          tjeneren tekniske logger (blant annet IP-adresse og tidspunkt) for
+          drift og sikkerhet. Grunnlaget er berettiget interesse i å levere og
+          sikre nettsiden. Loggene lagres kort tid hos leverandøren og brukes
+          ikke til noe annet.
+        </p>
+
+        <h3>Skrifttyper</h3>
+        <p>
+          Skriftene på siden hentes fra Google Fonts. Når nettleseren din
+          laster en skrift, ser Google IP-adressen din. Vi bruker ingen andre
+          Google-tjenester uten samtykke, og Google setter ingen
+          informasjonskapsler gjennom skriftene. Grunnlaget er berettiget
+          interesse i en rask og lesbar side.
+        </p>
+
+        <h3>Kart</h3>
+        <p>
+          Kartet i kontaktseksjonen hentes fra Google Maps, men lastes
+          <strong> først etter at du har sagt ja</strong> – enten i
+          informasjonskapsel-banneret eller ved å trykke «Vis kart». Da kan
+          Google sette egne informasjonskapsler og se IP-adressen din.
+          Grunnlaget er samtykke, og du kan når som helst ombestemme deg via
+          «Administrer informasjonskapsler» nederst på siden.
+        </p>
+
+        <h3>Reservasjon av produkter</h3>
+        <p>
+          Reserverer du et produkt via skjemaet, sender vi navn, telefonnummer
+          og eventuell e-postadresse og melding som en e-post til salongen, slik
+          at varen kan legges klar til deg. Grunnlaget er at behandlingen er
+          nødvendig for å følge opp forespørselen din. Opplysningene brukes ikke
+          til noe annet og slettes når reservasjonen er ferdig håndtert. Velger
+          du SMS eller telefon i stedet, går det gjennom din egen app – da
+          lagrer ikke nettsiden noe.
+        </p>
+
+        <h3>Timebestilling</h3>
+        <p>
+          Selve timebestillingen skjer hos Timma
+          (bestill.timma.no), som er en egen tjeneste med eget
+          behandlingsansvar og egen personvernerklæring. Nettsiden vår sender
+          deg bare dit – ingen opplysninger om deg følger med.
+        </p>
+
+        <h2>Informasjonskapsler og lokal lagring</h2>
+        <div class="privacy__tablewrap">
+          <table class="privacy__table">
+            <caption class="visually-hidden">
+              Oversikt over informasjonskapsler og lokal lagring
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Navn</th>
+                <th scope="col">Type</th>
+                <th scope="col">Formål</th>
+                <th scope="col">Varighet</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">lori-consent-v1</th>
+                <td>Lokal lagring (førstepart)</td>
+                <td>Husker valget ditt om informasjonskapsler. Strengt nødvendig.</td>
+                <td>Til du sletter nettleserdata</td>
+              </tr>
+              <tr>
+                <th scope="row">Google Maps-kapsler</th>
+                <td>Tredjepart (Google)</td>
+                <td>Settes av Google når du har valgt å vise kartet.</td>
+                <td>Styres av Google</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Ingen ikke-nødvendige informasjonskapsler settes før du har gjort et
+          aktivt valg, og «Kun nødvendige» er akkurat like enkelt som «Godta
+          alle».
+        </p>
+
+        <h2>Hvem vi deler med</h2>
+        <ul class="privacy__list" role="list">
+          <li>
+            <strong>Vercel Inc.</strong> (USA) – drift av nettsiden.
+          </li>
+          <li>
+            <strong>Google</strong> (USA) – skrifter, og kart hvis du samtykker.
+          </li>
+          <li>
+            <strong>Brevo</strong> (EU/Frankrike) – utsending av
+            reservasjons-e-post til salongen.
+          </li>
+        </ul>
+        <p>
+          Overføring til leverandører i USA skjer på grunnlag av
+          EU-kommisjonens standardpersonvernbestemmelser (SCC) og/eller
+          EU-U.S. Data Privacy Framework. Vi selger aldri opplysninger, og
+          deler ikke noe utover det som står her.
+        </p>
+
+        <h2>Dine rettigheter</h2>
+        <p>
+          Du har rett til innsyn, retting, sletting, begrensning og
+          innsigelse, og til å trekke samtykker tilbake. Ta kontakt på{" "}
+          <a href={`mailto:${contact.email}`}>{contact.email}</a>, så hjelper
+          vi deg. Du kan også klage til{" "}
+          <a href="https://www.datatilsynet.no" target="_blank" rel="noopener"
+            >Datatilsynet<span class="visually-hidden">&nbsp;(åpnes i ny fane)</span></a
+          > hvis du mener behandlingen er feil.
+        </p>
+
+        <h2>Endringer</h2>
+        <p>
+          Gjør vi vesentlige endringer i hva som behandles, oppdaterer vi denne
+          siden først. Sist oppdatert: {updated}.
+        </p>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .privacy {
+    max-width: 46rem;
+  }
+  .privacy h1 {
+    margin-bottom: 0.75rem;
+  }
+  .privacy__lead {
+    font-size: 1.15rem;
+    color: var(--color-ink-soft);
+    margin-bottom: 2rem;
+  }
+  .privacy h2 {
+    font-size: clamp(1.35rem, 3vw, 1.7rem);
+    margin-top: 2.25rem;
+  }
+  .privacy h3 {
+    margin-top: 1.5rem;
+  }
+  .privacy__tablewrap {
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+  .privacy__table {
+    width: 100%;
+    min-width: 34rem;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    background: var(--color-white);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+  }
+  .privacy__table th,
+  .privacy__table td {
+    text-align: left;
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid var(--color-line);
+    vertical-align: top;
+  }
+  .privacy__table thead th {
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+  .privacy__table tbody tr:last-child th,
+  .privacy__table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .privacy__list {
+    list-style: none;
+    display: grid;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+  }
+</style>

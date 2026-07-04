@@ -5,6 +5,11 @@
 // er ikke støttet i kombinasjon og kan gi inkonsistent oppførsel. Denne
 // filen patcher derfor config.json direkte (kjøres av `npm run build`).
 //
+// NB: Rutene må KUN inneholde felter Vercel-skjemaet kjenner (src, headers,
+// continue, has/missing, …) – egne markørfelter avvises ved deploy.
+// Idempotens løses derfor strukturelt: vi fjerner eksisterende ruter som
+// setter «våre» headere før vi legger inn ferske.
+//
 // Header-ruter bruker `continue: true` og påvirker ikke selve rutingen.
 // CSP settes kun på markedssidene – /keystatic (React-admin) og /api
 // holdes utenfor slik at redigeringsverktøyet aldri brekker.
@@ -14,7 +19,6 @@ import { dirname, join } from "node:path";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CONFIG = join(root, ".vercel", "output", "config.json");
-const MARKER = "x-lori-headers";
 
 const baseHeaders = {
   "X-Content-Type-Options": "nosniff",
@@ -39,6 +43,18 @@ const csp = [
   "object-src 'none'",
 ].join("; ");
 
+/** Kjenner igjen ruter dette scriptet har laget (strukturelt, uten markør). */
+const isOurs = (route) => {
+  if (!route || typeof route !== "object" || route.continue !== true) return false;
+  const h = route.headers;
+  if (!h || typeof h !== "object") return false;
+  return (
+    "X-Content-Type-Options" in h ||
+    "Content-Security-Policy" in h ||
+    "X-Robots-Tag" in h
+  );
+};
+
 let raw;
 try {
   raw = await readFile(CONFIG, "utf8");
@@ -51,17 +67,15 @@ const config = JSON.parse(raw);
 config.routes ??= [];
 
 // Idempotent: fjern våre gamle ruter før vi legger inn på nytt.
-config.routes = config.routes.filter((r) => r?.[MARKER] !== true);
+config.routes = config.routes.filter((r) => !isOurs(r));
 
 const headerRoutes = [
   {
-    [MARKER]: true,
     src: "/(.*)",
     headers: baseHeaders,
     continue: true,
   },
   {
-    [MARKER]: true,
     src: "/(?!keystatic|api)(.*)",
     headers: { "Content-Security-Policy": csp },
     continue: true,
@@ -70,7 +84,6 @@ const headerRoutes = [
   // Regelen gjelder alle host-er UNNTATT det ekte domenet – den dagen
   // (www.)lorifrisor.no pekes mot prosjektet, forsvinner noindex av seg selv.
   {
-    [MARKER]: true,
     src: "/(.*)",
     missing: [{ type: "host", value: "(www\\.)?lorifrisor\\.no" }],
     headers: { "X-Robots-Tag": "noindex, nofollow" },

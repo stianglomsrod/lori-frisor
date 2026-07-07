@@ -17,7 +17,7 @@
 | KI | Ikke relevant | ✅ | – |
 | Helse/betaling/regulert | Ikke relevant | ✅ | – |
 | Forbruker/markedsføring | Priser/tilbud/åpningstider bekreftet av eier (placeholder fjernet) | ⬜ eier bekrefter | Eier (Cindy) |
-| Open source/IP | Avhengigheter OK (npm); **fotolisenser verifiseres eller byttes** | ⬜ fotolisens | Utvikler |
+| Open source/IP | Avhengigheter: Astro 6 + vercel 10-oppgradering lukket `x-astro-path`-CVE + Astro-XSS-CVE-er (2026-07-09); gjenstående audit-funn er byggtid/dev-only og ikke reachable. **Fotolisenser: hero avklart (Pexels), about+produkt gjenstår** | ⬜ fotolisens | Utvikler |
 | Drift | CI grønn; Brevo-oppsett testet med ekte e-post; Vercel funksjonsregion arn1 satt; rollback = git revert | ⬜ Brevo-test + region | Utvikler |
 | Eiers aksept | Cindy godkjenner innhold + kjente avvik (Google Fonts-avviket) | ⬜ | Eier (Cindy) |
 

@@ -16,7 +16,8 @@ Sist oppdatert: 2026-07-04 (branch `feat/proff-oppgradering`).
 
 ## Kjøre prosjektet
 
-Krever Node 22+ (`.nvmrc` = 22; utviklet på Node 24, Vercel kjører 22).
+Krever Node ≥22.12 (Astro 6-minimum; `.nvmrc` = 22.12, utviklet på Node 24,
+Vercel kjører Node 22.x). Stack: Astro 6 + `@astrojs/vercel` 10 (se DECISIONS D12).
 
 ```bash
 npm install      # installer avhengigheter

@@ -55,12 +55,19 @@ stacktrace til klient); sikkerhetsheadere + CSP. Astro-XSS-CVE-ene for
 brukes ikke – verifisert).
 
 **Funn og status:**
-- [MIDDELS] `x-astro-path` path-override (GHSA-mr6q-rp88-fx84) i
-  `@astrojs/vercel@8` → patchet i `@astrojs/vercel@10.0.2` (krever Astro 6).
-  Berører on-demand-ruter (`/api/reserve`, `/keystatic`). Begrenset utnyttbarhet
-  her (ingen sti-basert autz å omgå; Keystatic bruker Cloud-OAuth). **Anbefalt:
-  koordinert oppgradering Astro 5→6 + vercel 8→10 (innen Keystatics peer-range,
-  stopp før 7) med egen testrunde.** Åpen – eierbeslutning.
+- [MIDDELS → ✅ LUKKET 2026-07-09] `x-astro-path` path-override
+  (GHSA-mr6q-rp88-fx84). **Løst** ved koordinert oppgradering Astro 5→6.4.8 +
+  `@astrojs/vercel` 8→10.0.8 + `@astrojs/react` 4→6 (innen Keystatics
+  peer-range; stoppet før Astro 7). npm audit bekrefter at advisoryen er borte,
+  og at Astro-kjernens XSS-CVE-er (define:vars/slot/server-island) samtidig gikk
+  fra HIGH til ikke-reachable. Full QA: check 0/0/0, grønt bygg, i18n-ruting,
+  endepunkt-guards, axe 0 brudd, samtykke/kart/reservasjon, dyplenker 10/10.
+- [LAV, akseptert] Gjenstående `path-to-regexp` ReDoS (GHSA-9wv6-86v2-598j) er
+  **transitiv via `@vercel/routing-utils` på byggtid**, ikke request-tid, og
+  krever angriper-kontrollerte rute-mønstre (våre ruter er statiske/utvikler-
+  definerte → ikke utnyttbar). «Fiks» ville krevd `@astrojs/vercel@11` → Astro 7,
+  som sprenger Keystatics peer-range. Vurderes på nytt når Keystatic støtter
+  Astro 7. Samme gjelder dev-only yaml/esbuild-CVE-er (byggkjede, ikke prod).
 - [LAV→FIKSET] Origin-sjekk i `/api/reserve` kunne omgås ved å utelate
   Origin-header. Strammet: manglende Origin avvises nå (403). Verifisert.
 - [LAV→FIKSET] Manglet eksplisitt body-størrelsestak før parsing. Lagt til

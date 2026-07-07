@@ -157,3 +157,32 @@ funnet er Timmas *interne* frontend-API (udokumentert, uten avtale/nøkler);
 å bygge egen booking på det ville vært skjørt, tvilsomt vilkårsmessig og
 gjenskapt D1-problemene (betaling, påminnelser, no-show-logikk). Dyplenker gir
 90 % av gevinsten for ~0 % av risikoen.
+
+## D12. Oppgradering til Astro 6 (sikkerhetsmotivert)
+
+**Beslutning (2026-07-09):** Koordinert oppgradering Astro 5.18 → 6.4.8,
+`@astrojs/vercel` 8 → 10.0.8, `@astrojs/react` 4 → 6.0.1. React beholdt på 18
+(integrasjonen støtter det). Stoppet bevisst **før Astro 7 / vercel 11**, som
+ligger utenfor Keystatics offisielle peer-range (`astro 2||3||4||5||6`).
+
+**Begrunnelse:** Sikkerhetsauditen (secure-dev-guardrails) fant `x-astro-path`
+uautentisert path-override (GHSA-mr6q-rp88-fx84) i Vercel-adapteren, patchet
+først i `@astrojs/vercel@10.0.2` som krever Astro 6. Oppgraderingen lukker den
+CVE-en og bringer samtidig Astro-kjernens XSS-fikser inn.
+
+**Konsekvenser:**
+- Compliance/sikkerhet: `x-astro-path`-CVE lukket; se `security_baseline.md`.
+- **Null kodeendringer nødvendig** – kun avhengighetsversjoner. Mulig fordi
+  innhold ligger i `src/cms/` (ingen Astro content collections, som Astro 6
+  ellers bryter), og bilder bygger `srcset` manuelt (uavhengig av Astros
+  bildetjeneste-endringer). i18n-ruting, env-lesing i `/api/reserve`,
+  script/style-rekkefølge og adapterens `imagesConfig` verifisert uendret.
+- Node-krav hevet til ≥22.12.0 (Astro 6-minimum); `.nvmrc`/`engines` oppdatert.
+  Vercel kjører Node 22.x (≥22.12), lokal utvikling Node 24.
+- Restrisiko: `path-to-regexp` ReDoS gjenstår transitivt (byggtid, statiske
+  ruter → ikke utnyttbar); ryddes når Keystatic støtter Astro 7.
+
+**QA:** check 0/0/0 · grønt produksjonsbygg · npm audit bekrefter CVE borte ·
+i18n (nb på «/», en på «/en/») · endepunkt-guards (403/413/200/400) · axe 0
+brudd · samtykke/kart/reservasjon i nettleser · dyplenker 10/10 i bygget ·
+mørk modus + mobil uten horisontal scroll.

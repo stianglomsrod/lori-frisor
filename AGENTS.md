@@ -7,7 +7,7 @@ self-contained. Deeper context lives in `PROJECT_DNA.md`, `DECISIONS.md`,
 ## What this is
 
 A polished, accessible, **static** marketing site for **Lori Frisør**, a hair
-salon in Halden, Norway. Built with **Astro v5**. The whole page is prerendered
+salon in Halden, Norway. Built with **Astro v6** (Node ≥22.12). The whole page is prerendered
 (zero client JS on the marketing pages); only the `/keystatic` editor runs
 server-side. The owner edits text/prices/images herself via Keystatic — no code.
 

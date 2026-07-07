@@ -60,16 +60,17 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const apiKey = import.meta.env.BREVO_API_KEY;
   if (!apiKey) return json(503, { ok: false, error: "not_configured" });
 
-  // Kun kall fra egen side (skjemaet vårt sender alltid Origin).
+  // Kun kall fra egen side. Nettleseren sender alltid Origin på en
+  // cross-site/`fetch`-POST som denne; et manglende Origin er derfor et
+  // ikke-nettleser-kall (curl/bot) og avvises. (Defense-in-depth – de
+  // egentlige vernene er honningkrukke, validering og takstgrense.)
   const origin = request.headers.get("origin");
-  if (origin) {
-    try {
-      if (new URL(origin).host !== new URL(request.url).host) {
-        return json(403, { ok: false, error: "origin" });
-      }
-    } catch {
+  try {
+    if (!origin || new URL(origin).host !== new URL(request.url).host) {
       return json(403, { ok: false, error: "origin" });
     }
+  } catch {
+    return json(403, { ok: false, error: "origin" });
   }
 
   let ip = "ukjent";
@@ -80,10 +81,20 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   }
   if (isRateLimited(ip)) return json(429, { ok: false, error: "rate_limited" });
 
+  // Tak på forespørselsstørrelse før parsing (DoS-vern; skjemaet vårt sender
+  // maks noen hundre tegn). Plattformen har sitt eget tak, dette er beltet.
+  const declaredLength = Number(request.headers.get("content-length") ?? "0");
+  if (declaredLength > 8_000) return json(413, { ok: false, error: "too_large" });
+
   let data: Record<string, unknown>;
   try {
-    data = (await request.json()) as Record<string, unknown>;
+    const raw = await request.text();
+    if (raw.length > 8_000) return json(413, { ok: false, error: "too_large" });
+    data = JSON.parse(raw) as Record<string, unknown>;
   } catch {
+    return json(400, { ok: false, error: "bad_json" });
+  }
+  if (typeof data !== "object" || data === null) {
     return json(400, { ok: false, error: "bad_json" });
   }
 

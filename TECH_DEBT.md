@@ -10,9 +10,11 @@ Sist oppdatert: 2026-07-04 (branch `feat/proff-oppgradering`).
   Uten nøkkel viser siden SMS-lenker (bevisst fallback). Send en testreservasjon.
 - **Vercel funksjonsregion**: sett til `arn1` (Stockholm) i prosjektinnstillingene
   (adapteren styrer ikke region; dashbord-innstillingen gjelder).
-- **Fotolisens**: bildene i `public/images/` er stock med uavklart opphav (arvet).
-  Verifiser lisens eller erstatt med egne/lisensierte foto. Alt-tekster er merket
-  «Illustrasjonsfoto» inntil ekte foto er på plass.
+- **Fotolisens**: `hero-salon.jpg` er avklart – Pexels-foto av Max Vakhtbovych
+  (fri kommersiell bruk; kreditering dokumentert i risikoregisteret, EXIF med
+  fotografnavn strippet fra filen). `about-salon.jpg` (viser personer) og
+  produktfotoene har fortsatt ukjent kilde – verifiser eller erstatt med egne
+  foto. Alt-tekster er merket «Illustrasjonsfoto» inntil ekte foto er på plass.
 - ~~Axe-retest~~ ✅ utført 2026-07-04: 0 brudd på 4 tilstander (én arvet
   kontrastfeil i footer funnet og fikset). NVDA-gjennomgang anbefales fortsatt
   (manuell). Logg i `docs/compliance/accessibility_checklist.md`.
